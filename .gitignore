@@ -1,0 +1,15 @@
+# AI assistant context (local only, not for GitHub)
+CLAUDE.md
+
+# Windows artifacts
+nul
+Thumbs.db
+Desktop.ini
+
+# macOS artifacts
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
