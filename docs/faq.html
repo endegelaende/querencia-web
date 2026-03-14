@@ -359,22 +359,20 @@
                 <h3 id="what-is-querencia-linux">What is Querencia Linux?</h3>
                 <p>
                     An atomic, immutable desktop Linux distribution based on
-                    AlmaLinux 10 with MATE Desktop. The name
-                    &#8220;Querencia&#8221; (Spanish) means a place where you
-                    feel safe and at home.
+                    AlmaLinux 10 with MATE Desktop. The name "Querencia"
+                    (Spanish) means a place where you feel safe and at home.
                 </p>
 
                 <h3 id="what-does-atomic-immutable-mean">
-                    What does &#8220;atomic&#8221; / &#8220;immutable&#8221;
-                    mean?
+                    What does "atomic" / "immutable" mean?
                 </h3>
                 <p>
                     The root filesystem (<code>/usr</code>, <code>/etc</code>)
-                    is read-only at runtime. You can&#8217;t break the system by
+                    is read-only at runtime. You can't break the system by
                     accidentally deleting system files or installing
                     incompatible packages. Updates replace the entire system
-                    image atomically &#8212; either the update succeeds
-                    completely or nothing changes.
+                    image atomically — either the update succeeds completely or
+                    nothing changes.
                 </p>
 
                 <h3 id="is-this-based-on-fedora">Is this based on Fedora?</h3>
@@ -389,13 +387,13 @@
                 </h3>
                 <ul>
                     <li>
-                        <strong>AMD</strong> (<code>querencia-linux</code>)
-                        &#8212; if you have an AMD/Intel GPU or no dedicated GPU
+                        <strong>AMD</strong> (<code>querencia-linux</code>) — if
+                        you have an AMD/Intel GPU or no dedicated GPU
                     </li>
                     <li>
                         <strong>NVIDIA</strong>
-                        (<code>querencia-linux-nvidia</code>) &#8212; if you
-                        have an NVIDIA GPU
+                        (<code>querencia-linux-nvidia</code>) — if you have an
+                        NVIDIA GPU
                     </li>
                 </ul>
 
@@ -416,7 +414,7 @@
                 <h2 id="software">Software</h2>
 
                 <h3 id="why-cant-i-use-sudo-dnf-install">
-                    Why can&#8217;t I use <code>sudo dnf install</code>?
+                    Why can't I use <code>sudo dnf install</code>?
                 </h3>
                 <p>
                     The root filesystem is read-only. Use Flatpak for GUI apps,
@@ -429,9 +427,9 @@
 
                 <h3 id="where-is-the-app-store">Where is the app store?</h3>
                 <p>
-                    <strong>Warehouse</strong> &#8212; installed automatically
-                    on first login. Find it in Applications &#8594; System Tools
-                    &#8594; Warehouse. Or: <code>ujust open-store</code>.
+                    <strong>Warehouse</strong> — installed automatically on
+                    first login. Find it in Applications → System Tools →
+                    Warehouse. Or: <code>ujust open-store</code>.
                 </p>
 
                 <h3 id="can-i-install-chrome-chromium">
@@ -455,18 +453,17 @@
                 </p>
 
                 <h3 id="whats-the-difference-between-micromamba-and-distrobox">
-                    What&#8217;s the difference between Micromamba and
-                    Distrobox?
+                    What's the difference between Micromamba and Distrobox?
                 </h3>
                 <ul>
                     <li>
-                        <strong>Micromamba</strong> &#8212; installs individual
+                        <strong>Micromamba</strong> — installs individual
                         packages into <code>~/micromamba</code>. Best for CLI
                         tools and languages (Python, Node, Rust). No root
                         needed. Fast.
                     </li>
                     <li>
-                        <strong>Distrobox</strong> &#8212; creates full Linux
+                        <strong>Distrobox</strong> — creates full Linux
                         containers (Fedora, Ubuntu, AlmaLinux). Best when you
                         need <code>dnf install</code> or
                         <code>apt install</code> for complex dependency chains.
@@ -480,8 +477,8 @@
 
                 <h3 id="how-do-i-update">How do I update?</h3>
                 <p>
-                    <code>ujust update</code> &#8212; or it happens
-                    automatically every 6 hours. See
+                    <code>ujust update</code> — or it happens automatically
+                    every 6 hours. See
                     <a href="/docs/updates.html">Updates &amp; Maintenance</a>.
                 </p>
 
@@ -514,9 +511,8 @@
                     How do I change my keyboard layout?
                 </h3>
                 <p>
-                    System &#8594; Preferences &#8594; Hardware &#8594; Keyboard
-                    &#8594; Layouts. The initial layout was set during
-                    installation.
+                    System → Preferences → Hardware → Keyboard → Layouts. The
+                    initial layout was set during installation.
                 </p>
 
                 <h3 id="how-do-i-change-the-theme">
@@ -525,10 +521,7 @@
                 <ul>
                     <li>Dark: <code>ujust mate-dark</code></li>
                     <li>Light: <code>ujust mate-light</code></li>
-                    <li>
-                        Or manually: System &#8594; Preferences &#8594;
-                        Appearance
-                    </li>
+                    <li>Or manually: System → Preferences → Appearance</li>
                 </ul>
 
                 <h3 id="where-are-my-files">Where are my files?</h3>
@@ -564,21 +557,19 @@
                     How do I set up a printer?
                 </h3>
                 <p>
-                    <code>ujust printer-setup</code> or System &#8594;
-                    Administration &#8594; Printing. Network printers on your
-                    local network should be auto-discovered. For
-                    <code>ping printer.local</code> to work, mDNS is already
-                    configured.
+                    <code>ujust printer-setup</code> or System → Administration
+                    → Printing. Network printers on your local network should be
+                    auto-discovered. For <code>ping printer.local</code> to
+                    work, mDNS is already configured.
                 </p>
 
                 <h3 id="how-do-i-control-my-monitors-brightness">
-                    How do I control my monitor&#8217;s brightness from the
-                    desktop?
+                    How do I control my monitor's brightness from the desktop?
                 </h3>
                 <p>
                     External monitors via HDMI/DP:
                     <code>ddcutil setvcp 10 70</code> (set brightness to 70%).
-                    Laptop screens: use the laptop&#8217;s function keys.
+                    Laptop screens: use the laptop's function keys.
                 </p>
 
                 <h3 id="what-is-ujust">What is <code>ujust</code>?</h3>
@@ -597,14 +588,14 @@
         </div>
         <footer class="docs-footer">
             <p>
-                &#169; 2026 Querencia Linux &#183;
+                &copy; 2026 Querencia Linux &middot;
                 <a
                     href="https://github.com/endegelaende/querencia-linux/blob/main/LICENSE"
                     target="_blank"
                     rel="noopener"
                     >MIT License</a
                 >
-                &#183; <a href="/privacy.html">Privacy</a>
+                &middot; <a href="/privacy.html">Privacy</a>
             </p>
         </footer>
     </body>
