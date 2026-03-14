@@ -699,6 +699,81 @@
             }
 
             /* ═══════════════════════════════════════════════════════════════════
+       SCREENSHOTS
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .screenshots-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+                max-width: 960px;
+                margin: 0 auto;
+            }
+
+            .screenshot-card {
+                position: relative;
+                border-radius: 14px;
+                overflow: hidden;
+                border: 1px solid var(--color-border);
+                background: white;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .screenshot-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 40px rgba(61, 46, 31, 0.12);
+            }
+
+            .screenshot-card img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            .screenshot-label {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: var(--color-text-secondary);
+                text-align: center;
+                background: var(--color-warm-white);
+                border-top: 1px solid var(--color-border-light);
+            }
+
+            /* Lightbox overlay */
+            .screenshot-lightbox {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.85);
+                z-index: 9999;
+                align-items: center;
+                justify-content: center;
+                cursor: zoom-out;
+            }
+
+            .screenshot-lightbox.active {
+                display: flex;
+            }
+
+            .screenshot-lightbox img {
+                max-width: 92%;
+                max-height: 92%;
+                border-radius: 8px;
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+            }
+
+            @media (max-width: 640px) {
+                .screenshots-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
        ARCHITECTURE DIAGRAM
        ═══════════════════════════════════════════════════════════════════ */
 
@@ -1225,6 +1300,7 @@
 
                 <div class="nav-links" id="navLinks">
                     <a href="#features">Features</a>
+                    <a href="#screenshots">Screenshots</a>
                     <a href="#architecture">Architecture</a>
                     <a href="#software">Software</a>
                     <a href="#install">Install</a>
@@ -1513,6 +1589,80 @@
                 </div>
             </div>
         </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       SCREENSHOTS
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section id="screenshots" class="section-alt">
+            <div class="section-inner">
+                <div class="section-header animate-on-scroll">
+                    <span class="section-label">
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect
+                                x="2"
+                                y="3"
+                                width="20"
+                                height="14"
+                                rx="2"
+                                ry="2"
+                            ></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                        Screenshots
+                    </span>
+                    <h2 class="section-title">See it in action</h2>
+                    <p class="section-subtitle">
+                        From login screen to desktop — clean, branded, ready to
+                        use.
+                    </p>
+                </div>
+
+                <div class="screenshots-grid animate-on-scroll">
+                    <div
+                        class="screenshot-card"
+                        onclick="openLightbox('assets/screenshot-lightdm.png')"
+                    >
+                        <img
+                            src="assets/screenshot-lightdm.png"
+                            alt="Querencia Linux LightDM login screen with branded wallpaper"
+                            loading="lazy"
+                        />
+                        <div class="screenshot-label">LightDM Login Screen</div>
+                    </div>
+                    <div
+                        class="screenshot-card"
+                        onclick="openLightbox('assets/screenshot-desktop.png')"
+                    >
+                        <img
+                            src="assets/screenshot-desktop.png"
+                            alt="Querencia Linux MATE Desktop with BlueMenta theme"
+                            loading="lazy"
+                        />
+                        <div class="screenshot-label">MATE Desktop</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lightbox overlay -->
+        <div
+            class="screenshot-lightbox"
+            id="screenshotLightbox"
+            onclick="closeLightbox()"
+        >
+            <img id="lightboxImg" src="" alt="Screenshot fullscreen" />
+        </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════
        ARCHITECTURE
@@ -2349,6 +2499,25 @@
             }
 
             // Scroll animation (Intersection Observer)
+            function openLightbox(src) {
+                document.getElementById("lightboxImg").src = src;
+                document
+                    .getElementById("screenshotLightbox")
+                    .classList.add("active");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeLightbox() {
+                document
+                    .getElementById("screenshotLightbox")
+                    .classList.remove("active");
+                document.body.style.overflow = "";
+            }
+
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") closeLightbox();
+            });
+
             const observer = new IntersectionObserver(
                 (entries) => {
                     entries.forEach((entry) => {
