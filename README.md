@@ -1,122 +1,94 @@
 # Querencia Linux Website
 
-Static website for [Querencia Linux](https://github.com/endegelaende/querencia-linux) — "Where Linux Feels at Home".
+Landing page and documentation for [Querencia Linux](https://github.com/endegelaende/querencia-linux) — *Where Linux Feels at Home*.
 
 **Live:** [querencialinux.org](https://querencialinux.org)
+
+Querencia Linux is an atomic, immutable Linux desktop built on AlmaLinux 10 with MATE Desktop.
 
 ## Structure
 
 ```
 querencia-web/
-├── index.html          ← Main landing page (single-page, no build step)
-├── privacy.html        ← Privacy policy (GDPR)
-├── CNAME               ← Custom domain for GitHub Pages
+├── index.html                  ← Landing page (HTML + CSS + JS, single file)
+├── privacy.html                ← Privacy policy (GDPR)
 ├── assets/
-│   └── querencia-logo.svg  ← Project logo
+│   ├── querencia-logo.svg      ← Logo (SVG vector paths)
+│   ├── og-image.png            ← Social media preview (1200×630)
+│   ├── og-image.svg            ← OG image source
+│   ├── screenshot-lightdm.png  ← LightDM login screenshot (1920×1080)
+│   └── screenshot-desktop.png  ← MATE desktop screenshot (1920×1080)
+├── docs/
+│   ├── index.html              ← Documentation overview
+│   ├── getting-started.html    ← First login, Welcome Center, desktop
+│   ├── installing-software.html← Flatpak, Micromamba, Distrobox
+│   ├── updates.html            ← Automatic updates, rollback, ZRAM
+│   ├── hardware.html           ← GPU (AMD/NVIDIA), audio, printing, WiFi
+│   └── faq.html                ← Frequently asked questions
 ├── fonts/
-│   ├── inter-variable.woff2          ← Inter font (self-hosted, no Google CDN)
-│   └── jetbrains-mono-variable.woff2 ← JetBrains Mono (self-hosted)
-└── README.md           ← This file
+│   ├── inter-variable.woff2    ← Inter (self-hosted, GDPR)
+│   └── jetbrains-mono-variable.woff2  ← JetBrains Mono (self-hosted)
+├── generate-og-image.py        ← Regenerate OG image (Python + Pillow)
+├── CNAME                       ← Legacy (unused by Cloudflare)
+└── .gitignore
 ```
 
-## Setup
+## Hosting
 
-### 1. Download fonts (required)
+The site is deployed via **Cloudflare Pages** — every push to `master` goes live within ~60 seconds.
 
-Fonts are self-hosted to avoid GDPR issues with Google Fonts CDN. Download them into `fonts/`:
+- **Custom domain:** `querencialinux.org` (DNS managed via Cloudflare)
+- **SSL:** Automatic (Full strict)
+- **Build command:** None (static files served directly)
+
+## Local Preview
+
+No build step required:
 
 ```bash
-# Inter (variable weight, Latin subset)
-curl -L -o fonts/inter-variable.woff2 \
-  "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2"
-
-# JetBrains Mono (variable weight, Latin subset)
-curl -L -o fonts/jetbrains-mono-variable.woff2 \
-  "https://fonts.gstatic.com/s/jetbrainsmono/v21/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2"
+python -m http.server 8000
+# or: npx serve .
+# or: just open index.html in your browser
 ```
-
-Or get them from:
-- **Inter:** https://rsms.me/inter/ → Download → extract `.woff2`
-- **JetBrains Mono:** https://www.jetbrains.com/lp/mono/ → Download → extract `.woff2`
-
-### 2. Preview locally
-
-No build step needed — just open the HTML file:
-
-```bash
-# Python
-python3 -m http.server 8000 --directory .
-
-# Node
-npx serve .
-
-# Or just open index.html in your browser
-```
-
-### 3. Deploy to GitHub Pages
-
-#### Option A: Dedicated repo (recommended)
-
-1. Create repo `endegelaende/querencia-web` (or `endegelaende.github.io` for the org page)
-2. Push this directory to `main`
-3. Go to **Settings → Pages → Source: Deploy from a branch → Branch: main / root**
-4. GitHub Pages will serve `index.html` automatically
-5. Add custom domain `querencialinux.org` in Pages settings
-
-#### Option B: Subdirectory of main repo
-
-1. Copy this directory to `docs/` in the `querencia-linux` repo
-2. Go to **Settings → Pages → Source: Deploy from a branch → Branch: main / docs**
-
-### 4. DNS Setup (Ionos → GitHub Pages)
-
-Add these DNS records at your domain registrar (Ionos):
-
-| Type | Name | Value |
-|---|---|---|
-| `A` | `@` | `185.199.108.153` |
-| `A` | `@` | `185.199.109.153` |
-| `A` | `@` | `185.199.110.153` |
-| `A` | `@` | `185.199.111.153` |
-| `CNAME` | `www` | `endegelaende.github.io` |
-
-GitHub Pages provides free HTTPS automatically after DNS propagation (up to 24h).
 
 ## Design
 
-Warm, inviting design language inspired by the admin-panel "Warm Theme 2026":
+Warm, inviting design language with Terracotta accent colors:
 
 | Token | Hex | Usage |
 |---|---|---|
-| Terracotta | `#C75230` | Primary accent (from logo) |
+| Terracotta | `#C75230` | Primary accent, logo |
 | Terracotta Dark | `#A33D1E` | Hover states |
 | Gold | `#D4A853` | Secondary accent |
 | Cream | `#FFFBF5` | Page background |
-| Sand | `#F5EDE4` | Card backgrounds, code blocks |
-| Text Primary | `#3D2E1F` | Headings, body text |
+| Sand | `#F5EDE4` | Card backgrounds |
+| Text Primary | `#3D2E1F` | Headings, body |
 | Text Secondary | `#6B5B4D` | Descriptions |
 | Text Muted | `#9C8B7A` | Labels, captions |
-| Linux Gray | `#888780` | From logo "LINUX" text |
+
+Terminal mockups use the Dracula color scheme (`#282A36` background).
+
+Self-hosted fonts: **Inter** (sans-serif) and **JetBrains Mono** (monospace).
 
 ## No Tracking
 
 - **No cookies** — none at all
 - **No analytics** — no Google Analytics, no Matomo, no Plausible
-- **No external requests** — fonts are self-hosted, no CDN dependencies
-- **No JavaScript frameworks** — vanilla JS for tabs/accordion only
+- **No external requests** — fonts are self-hosted, zero CDN dependencies
+- **No JavaScript frameworks** — vanilla JS for tabs, accordion, and lightbox
 
-## Adding Screenshots
+## Documentation
 
-When screenshots are available, add them to `assets/` and reference in `index.html`:
+The `docs/` directory contains 6 user-facing documentation pages with a shared sidebar layout. Content is sourced from the Markdown files in the [main repository](https://github.com/endegelaende/querencia-linux/tree/main/Documentation) and hand-converted to HTML.
 
-```
-assets/screenshot-desktop.webp    ← MATE desktop
-assets/screenshot-terminal.webp   ← Terminal with ujust
-assets/screenshot-warehouse.webp  ← Warehouse app store
-assets/screenshot-lightdm.webp    ← Login screen
-```
-
-Use WebP format for best size/quality ratio. Recommended size: 1200×800px.
+| Page | Content |
+|---|---|
+| [Overview](/docs/) | Guide cards, quick reference, links |
+| [Getting Started](/docs/getting-started.html) | First login, Welcome Center, desktop, keyboard, apps |
+| [Installing Software](/docs/installing-software.html) | Flatpak, Micromamba, Distrobox |
+| [Updates & Maintenance](/docs/updates.html) | Automatic updates, rollback, ZRAM, system info |
+| [Hardware Support](/docs/hardware.html) | GPU (AMD/NVIDIA), audio, printing, scanning, Bluetooth, WiFi |
+| [FAQ](/docs/faq.html) | 23 questions across General, Software, and System |
 
 ## License
 
