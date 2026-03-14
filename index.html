@@ -1,0 +1,2368 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Querencia Linux — Where Linux Feels at Home</title>
+        <meta
+            name="description"
+            content="Atomic, immutable Linux desktop built on AlmaLinux 10 with MATE Desktop. Automatic updates, rollback, Flatpak, Micromamba, AMD GPU support out of the box."
+        />
+        <meta name="theme-color" content="#C75230" />
+
+        <!-- Open Graph -->
+        <meta property="og:title" content="Querencia Linux" />
+        <meta
+            property="og:description"
+            content="Where Linux Feels at Home — Atomic desktop built on AlmaLinux 10 with MATE Desktop."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://querencialinux.org" />
+        <meta
+            property="og:image"
+            content="https://querencialinux.org/assets/og-image.png"
+        />
+
+        <!-- Fonts — self-hosted to avoid GDPR issues with Google Fonts CDN -->
+        <style>
+            @font-face {
+                font-family: "Inter";
+                font-style: normal;
+                font-weight: 300 900;
+                font-display: swap;
+                src: url("fonts/inter-variable.woff2") format("woff2");
+            }
+            @font-face {
+                font-family: "JetBrains Mono";
+                font-style: normal;
+                font-weight: 400 700;
+                font-display: swap;
+                src: url("fonts/jetbrains-mono-variable.woff2") format("woff2");
+            }
+        </style>
+
+        <style>
+            /* ═══════════════════════════════════════════════════════════════════
+       QUERENCIA LINUX — WARM THEME
+       Inspired by the "Warm Theme 2026" admin-panel design language
+       Colors: Terracotta #C75230, Warm Gray #888780, Cream/Sand
+       ═══════════════════════════════════════════════════════════════════ */
+
+            :root {
+                --color-cream: #fffbf5;
+                --color-warm-white: #fef9f3;
+                --color-sand: #f5ede4;
+                --color-sand-dark: #e8ded1;
+
+                --color-terracotta: #c75230;
+                --color-terracotta-light: #f4bdad;
+                --color-terracotta-dark: #a33d1e;
+                --color-terracotta-bg: #fdf0ec;
+
+                --color-gold: #d4a853;
+                --color-gold-light: #f0deb4;
+                --color-gold-dark: #b8922f;
+
+                --color-text: #3d2e1f;
+                --color-text-secondary: #6b5b4d;
+                --color-text-muted: #9c8b7a;
+                --color-linux-gray: #888780;
+
+                --color-border: #e8ded1;
+                --color-border-light: #f0e8dd;
+
+                --color-success: #22c55e;
+                --color-success-bg: #dcfce7;
+                --color-info: #3b82f6;
+                --color-info-bg: #dbeafe;
+
+                --font-sans:
+                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, sans-serif;
+                --font-mono:
+                    "JetBrains Mono", "Fira Code", "Cascadia Code", "Monaco",
+                    monospace;
+
+                --max-width: 1120px;
+                --section-padding: 5rem 1.5rem;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       RESET & BASE
+       ═══════════════════════════════════════════════════════════════════ */
+
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+                font-size: 16px;
+                color-scheme: light;
+            }
+
+            body {
+                font-family: var(--font-sans);
+                background: var(--color-cream);
+                color: var(--color-text);
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                line-height: 1.6;
+            }
+
+            ::selection {
+                background: var(--color-terracotta);
+                color: white;
+            }
+
+            a {
+                color: var(--color-terracotta);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+
+            a:hover {
+                color: var(--color-terracotta-dark);
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            code {
+                font-family: var(--font-mono);
+                background: var(--color-sand);
+                padding: 0.15em 0.4em;
+                border-radius: 4px;
+                font-size: 0.88em;
+                color: var(--color-terracotta-dark);
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       SCROLLBAR
+       ═══════════════════════════════════════════════════════════════════ */
+
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: var(--color-sand);
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--color-sand-dark);
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--color-terracotta-light);
+            }
+            * {
+                scrollbar-width: thin;
+                scrollbar-color: var(--color-sand-dark) var(--color-sand);
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       ANIMATIONS
+       ═══════════════════════════════════════════════════════════════════ */
+
+            @keyframes fade-up {
+                from {
+                    opacity: 0;
+                    transform: translateY(24px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-6px);
+                }
+            }
+
+            @keyframes shimmer {
+                0% {
+                    background-position: -200% 0;
+                }
+                100% {
+                    background-position: 200% 0;
+                }
+            }
+
+            @keyframes pulse-ring {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(199, 82, 48, 0.3);
+                }
+                70% {
+                    box-shadow: 0 0 0 12px rgba(199, 82, 48, 0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(199, 82, 48, 0);
+                }
+            }
+
+            .animate-on-scroll {
+                opacity: 0;
+                transform: translateY(24px);
+                transition:
+                    opacity 0.6s ease,
+                    transform 0.6s ease;
+            }
+
+            .animate-on-scroll.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 100;
+                background: rgba(255, 251, 245, 0.85);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border-bottom: 1px solid var(--color-border-light);
+                transition: box-shadow 0.3s;
+            }
+
+            .nav.scrolled {
+                box-shadow: 0 2px 24px rgba(61, 46, 31, 0.08);
+            }
+
+            .nav-inner {
+                max-width: var(--max-width);
+                margin: 0 auto;
+                padding: 0 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 56px;
+            }
+
+            .nav-logo {
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-weight: 700;
+                font-size: 1rem;
+                color: var(--color-text);
+            }
+
+            .nav-logo img {
+                height: 28px;
+                width: auto;
+            }
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+
+            .nav-links a {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: var(--color-text-secondary);
+                border-radius: 8px;
+                transition: all 0.2s;
+            }
+
+            .nav-links a:hover {
+                background: var(--color-sand);
+                color: var(--color-text);
+            }
+
+            .nav-cta {
+                background: linear-gradient(
+                    135deg,
+                    var(--color-terracotta),
+                    var(--color-terracotta-dark)
+                ) !important;
+                color: white !important;
+                padding: 0.4rem 1rem !important;
+                font-weight: 600 !important;
+                box-shadow: 0 2px 8px rgba(199, 82, 48, 0.25);
+            }
+
+            .nav-cta:hover {
+                box-shadow: 0 4px 16px rgba(199, 82, 48, 0.35) !important;
+                transform: translateY(-1px);
+            }
+
+            .nav-mobile-toggle {
+                display: none;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0.5rem;
+                color: var(--color-text);
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .hero {
+                padding: 8rem 1.5rem 5rem;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero::before {
+                content: "";
+                position: absolute;
+                top: -40%;
+                left: -20%;
+                width: 140%;
+                height: 140%;
+                background:
+                    radial-gradient(
+                        ellipse at 50% 30%,
+                        rgba(199, 82, 48, 0.06) 0%,
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        ellipse at 80% 70%,
+                        rgba(212, 168, 83, 0.05) 0%,
+                        transparent 50%
+                    );
+                pointer-events: none;
+            }
+
+            .hero-content {
+                position: relative;
+                max-width: 720px;
+                margin: 0 auto;
+            }
+
+            .hero-title {
+                font-size: 2.75rem;
+                font-weight: 800;
+                color: var(--color-text);
+                line-height: 1.15;
+                margin-bottom: 1.5rem;
+                animation: fade-up 0.8s ease 0.2s both;
+            }
+
+            .hero-description {
+                font-size: 1.05rem;
+                color: var(--color-text-secondary);
+                line-height: 1.7;
+                margin-bottom: 2.5rem;
+                animation: fade-up 0.8s ease 0.35s both;
+            }
+
+            .hero-description strong {
+                color: var(--color-text);
+                font-weight: 600;
+            }
+
+            .hero-badges {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-bottom: 2.5rem;
+                animation: fade-up 0.8s ease 0.3s both;
+            }
+
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                padding: 0.3rem 0.75rem;
+                border-radius: 999px;
+                font-size: 0.78rem;
+                font-weight: 600;
+                border: 1px solid var(--color-border);
+                background: white;
+                color: var(--color-text-secondary);
+            }
+
+            .badge svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .hero-actions {
+                display: flex;
+                gap: 0.75rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                animation: fade-up 0.8s ease 0.5s both;
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.7rem 1.5rem;
+                border-radius: 10px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                border: none;
+                transition: all 0.2s;
+                text-decoration: none;
+            }
+
+            .btn svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .btn-primary {
+                background: linear-gradient(
+                    135deg,
+                    var(--color-terracotta),
+                    var(--color-terracotta-dark)
+                );
+                color: white;
+                box-shadow: 0 4px 16px rgba(199, 82, 48, 0.3);
+            }
+
+            .btn-primary:hover {
+                color: white;
+                box-shadow: 0 6px 24px rgba(199, 82, 48, 0.4);
+                transform: translateY(-2px);
+            }
+
+            .btn-secondary {
+                background: white;
+                color: var(--color-text);
+                border: 1px solid var(--color-border);
+                box-shadow: 0 2px 8px rgba(61, 46, 31, 0.06);
+            }
+
+            .btn-secondary:hover {
+                color: var(--color-text);
+                background: var(--color-sand);
+                transform: translateY(-1px);
+            }
+
+            .hero-terminal {
+                max-width: 540px;
+                margin: 3rem auto 0;
+                animation: fade-up 0.8s ease 0.65s both;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       TERMINAL BLOCK
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .terminal {
+                background: #2d2018;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 8px 32px rgba(61, 46, 31, 0.15);
+                text-align: left;
+                border: 1px solid rgba(255, 255, 255, 0.06);
+            }
+
+            .terminal-header {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 0.6rem 0.9rem;
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+            .terminal-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+            }
+
+            .terminal-dot.red {
+                background: #ef4444;
+            }
+            .terminal-dot.yellow {
+                background: #f59e0b;
+            }
+            .terminal-dot.green {
+                background: #22c55e;
+            }
+
+            .terminal-title {
+                flex: 1;
+                text-align: center;
+                font-size: 0.72rem;
+                color: rgba(255, 255, 255, 0.35);
+                font-family: var(--font-mono);
+            }
+
+            .terminal-body {
+                padding: 1rem 1.2rem;
+                font-family: var(--font-mono);
+                font-size: 0.82rem;
+                line-height: 1.7;
+                color: #d4c5b5;
+            }
+
+            .terminal-body .prompt {
+                color: var(--color-terracotta-light);
+                user-select: none;
+            }
+
+            .terminal-body .command {
+                color: #f0deb4;
+            }
+
+            .terminal-body .comment {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .terminal-body .output {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            .terminal-body .success {
+                color: #86efac;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       SECTIONS (common)
+       ═══════════════════════════════════════════════════════════════════ */
+
+            section {
+                padding: var(--section-padding);
+            }
+
+            .section-inner {
+                max-width: var(--max-width);
+                margin: 0 auto;
+            }
+
+            .section-header {
+                text-align: center;
+                margin-bottom: 3rem;
+            }
+
+            .section-label {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                padding: 0.3rem 0.8rem;
+                border-radius: 999px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                background: var(--color-terracotta-bg);
+                color: var(--color-terracotta);
+                margin-bottom: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                font-weight: 800;
+                color: var(--color-text);
+                line-height: 1.2;
+                margin-bottom: 0.75rem;
+            }
+
+            .section-subtitle {
+                font-size: 1.05rem;
+                color: var(--color-text-secondary);
+                max-width: 600px;
+                margin: 0 auto;
+                line-height: 1.6;
+            }
+
+            /* Alternate section background */
+            .section-alt {
+                background: var(--color-warm-white);
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       FEATURE CARDS
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+            }
+
+            .feature-card {
+                background: white;
+                border: 1px solid var(--color-border);
+                border-radius: 14px;
+                padding: 1.5rem;
+                transition: all 0.25s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .feature-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    var(--color-terracotta),
+                    var(--color-gold)
+                );
+                opacity: 0;
+                transition: opacity 0.25s;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 32px rgba(61, 46, 31, 0.08);
+            }
+
+            .feature-card:hover::before {
+                opacity: 1;
+            }
+
+            .feature-icon {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1rem;
+                font-size: 1.3rem;
+            }
+
+            .feature-icon.terracotta {
+                background: var(--color-terracotta-bg);
+                color: var(--color-terracotta);
+            }
+
+            .feature-icon.gold {
+                background: rgba(212, 168, 83, 0.15);
+                color: var(--color-gold-dark);
+            }
+
+            .feature-icon.green {
+                background: var(--color-success-bg);
+                color: var(--color-success);
+            }
+
+            .feature-icon.blue {
+                background: var(--color-info-bg);
+                color: var(--color-info);
+            }
+
+            .feature-icon.gray {
+                background: var(--color-sand);
+                color: var(--color-text-secondary);
+            }
+
+            .feature-card h3 {
+                font-size: 1rem;
+                font-weight: 700;
+                margin-bottom: 0.4rem;
+                color: var(--color-text);
+            }
+
+            .feature-card p {
+                font-size: 0.88rem;
+                color: var(--color-text-secondary);
+                line-height: 1.55;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       ARCHITECTURE DIAGRAM
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .arch-diagram {
+                max-width: 680px;
+                margin: 0 auto;
+            }
+
+            .arch-layer {
+                padding: 0.9rem 1.25rem;
+                border-radius: 10px;
+                margin-bottom: 4px;
+                text-align: center;
+                font-weight: 600;
+                font-size: 0.85rem;
+                transition: transform 0.2s;
+                border: 1px solid transparent;
+            }
+
+            .arch-layer:hover {
+                transform: scale(1.02);
+            }
+
+            .arch-layer.user {
+                background: white;
+                border-color: var(--color-border);
+                color: var(--color-text);
+            }
+
+            .arch-layer.desktop {
+                background: var(--color-terracotta-bg);
+                border-color: var(--color-terracotta-light);
+                color: var(--color-terracotta-dark);
+            }
+
+            .arch-layer.gpu {
+                background: rgba(212, 168, 83, 0.12);
+                border-color: var(--color-gold-light);
+                color: var(--color-gold-dark);
+            }
+
+            .arch-layer.base {
+                background: var(--color-sand);
+                border-color: var(--color-sand-dark);
+                color: var(--color-text-secondary);
+            }
+
+            .arch-layer.kernel {
+                background: #2d2018;
+                color: var(--color-terracotta-light);
+            }
+
+            .arch-label {
+                font-size: 0.72rem;
+                font-weight: 400;
+                opacity: 0.7;
+                display: block;
+                margin-top: 0.15rem;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       SOFTWARE METHODS
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .methods-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+            }
+
+            .method-card {
+                background: white;
+                border: 1px solid var(--color-border);
+                border-radius: 14px;
+                padding: 1.75rem;
+                text-align: center;
+                transition: all 0.25s ease;
+            }
+
+            .method-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 32px rgba(61, 46, 31, 0.08);
+            }
+
+            .method-emoji {
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+                display: block;
+            }
+
+            .method-card h3 {
+                font-size: 1.05rem;
+                font-weight: 700;
+                margin-bottom: 0.35rem;
+                color: var(--color-text);
+            }
+
+            .method-card .method-for {
+                font-size: 0.82rem;
+                color: var(--color-terracotta);
+                font-weight: 600;
+                margin-bottom: 0.6rem;
+            }
+
+            .method-card p {
+                font-size: 0.85rem;
+                color: var(--color-text-secondary);
+                line-height: 1.55;
+            }
+
+            .method-card code {
+                font-size: 0.78rem;
+                display: inline-block;
+                margin-top: 0.5rem;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       INSTALLATION STEPS
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .install-tabs {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: center;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .install-tab {
+                padding: 0.5rem 1.25rem;
+                border-radius: 999px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
+                border: 1px solid var(--color-border);
+                background: white;
+                color: var(--color-text-secondary);
+                transition: all 0.2s;
+            }
+
+            .install-tab:hover {
+                background: var(--color-sand);
+            }
+
+            .install-tab.active {
+                background: var(--color-terracotta);
+                color: white;
+                border-color: var(--color-terracotta);
+            }
+
+            .install-panel {
+                display: none;
+                max-width: 640px;
+                margin: 0 auto;
+            }
+
+            .install-panel.active {
+                display: block;
+                animation: fade-up 0.3s ease;
+            }
+
+            .install-step {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .step-number {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: var(--color-terracotta-bg);
+                color: var(--color-terracotta);
+                font-weight: 700;
+                font-size: 0.85rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                margin-top: 0.1rem;
+            }
+
+            .step-content h4 {
+                font-size: 0.95rem;
+                font-weight: 600;
+                margin-bottom: 0.3rem;
+                color: var(--color-text);
+            }
+
+            .step-content p {
+                font-size: 0.88rem;
+                color: var(--color-text-secondary);
+                line-height: 1.55;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       DEFAULTS TABLE
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .defaults-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .default-item {
+                display: flex;
+                gap: 0.75rem;
+                align-items: flex-start;
+                padding: 1rem;
+                background: white;
+                border: 1px solid var(--color-border);
+                border-radius: 10px;
+                transition: all 0.2s;
+            }
+
+            .default-item:hover {
+                border-color: var(--color-terracotta-light);
+                background: var(--color-warm-white);
+            }
+
+            .default-icon {
+                font-size: 1.25rem;
+                flex-shrink: 0;
+                margin-top: 0.1rem;
+            }
+
+            .default-item .label {
+                font-size: 0.78rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                color: var(--color-text-muted);
+                margin-bottom: 0.15rem;
+            }
+
+            .default-item .value {
+                font-size: 0.9rem;
+                color: var(--color-text);
+                font-weight: 500;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       FAQ
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .faq-list {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            .faq-item {
+                border: 1px solid var(--color-border);
+                border-radius: 12px;
+                background: white;
+                margin-bottom: 0.75rem;
+                overflow: hidden;
+                transition: border-color 0.2s;
+            }
+
+            .faq-item:hover {
+                border-color: var(--color-terracotta-light);
+            }
+
+            .faq-question {
+                width: 100%;
+                padding: 1rem 1.25rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-family: var(--font-sans);
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: var(--color-text);
+                text-align: left;
+            }
+
+            .faq-question:hover {
+                color: var(--color-terracotta);
+            }
+
+            .faq-chevron {
+                transition: transform 0.2s;
+                color: var(--color-text-muted);
+                flex-shrink: 0;
+                margin-left: 1rem;
+            }
+
+            .faq-item.open .faq-chevron {
+                transform: rotate(180deg);
+            }
+
+            .faq-answer {
+                max-height: 0;
+                overflow: hidden;
+                transition:
+                    max-height 0.3s ease,
+                    padding 0.3s ease;
+            }
+
+            .faq-item.open .faq-answer {
+                max-height: 400px;
+                padding: 0 1.25rem 1.15rem;
+            }
+
+            .faq-answer p {
+                font-size: 0.9rem;
+                color: var(--color-text-secondary);
+                line-height: 1.65;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       CTA SECTION
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .cta-section {
+                text-align: center;
+                padding: 4rem 1.5rem;
+            }
+
+            .cta-box {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 3rem 2rem;
+                background: white;
+                border: 1px solid var(--color-border);
+                border-radius: 16px;
+                box-shadow: 0 8px 40px rgba(61, 46, 31, 0.06);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .cta-box::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(
+                    90deg,
+                    var(--color-terracotta),
+                    var(--color-gold),
+                    var(--color-terracotta)
+                );
+            }
+
+            .cta-box h2 {
+                font-size: 1.75rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+            }
+
+            .cta-box p {
+                color: var(--color-text-secondary);
+                margin-bottom: 1.75rem;
+                font-size: 1rem;
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════════ */
+
+            .footer {
+                padding: 2rem 1.5rem;
+                border-top: 1px solid var(--color-border-light);
+                background: var(--color-warm-white);
+            }
+
+            .footer-inner {
+                max-width: var(--max-width);
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .footer-left {
+                font-size: 0.82rem;
+                color: var(--color-text-muted);
+            }
+
+            .footer-left a {
+                color: var(--color-text-muted);
+                text-decoration: underline;
+                text-underline-offset: 2px;
+            }
+
+            .footer-left a:hover {
+                color: var(--color-terracotta);
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 1.25rem;
+            }
+
+            .footer-links a {
+                font-size: 0.82rem;
+                color: var(--color-text-muted);
+            }
+
+            .footer-links a:hover {
+                color: var(--color-terracotta);
+            }
+
+            /* ═══════════════════════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════════════════════ */
+
+            @media (max-width: 900px) {
+                .features-grid,
+                .methods-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 640px) {
+                :root {
+                    --section-padding: 3.5rem 1.25rem;
+                }
+
+                .nav-links {
+                    display: none;
+                }
+
+                .nav-mobile-toggle {
+                    display: block;
+                }
+
+                .nav-links.open {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+                    top: 56px;
+                    left: 0;
+                    right: 0;
+                    background: var(--color-cream);
+                    border-bottom: 1px solid var(--color-border);
+                    padding: 0.75rem;
+                    box-shadow: 0 8px 32px rgba(61, 46, 31, 0.1);
+                }
+
+                .hero {
+                    padding: 6.5rem 1.25rem 3rem;
+                }
+
+                .hero-title {
+                    font-size: 2rem;
+                }
+
+                .section-title {
+                    font-size: 1.6rem;
+                }
+
+                .features-grid,
+                .methods-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .defaults-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .hero-actions {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .btn {
+                    width: 100%;
+                    justify-content: center;
+                    max-width: 280px;
+                }
+
+                .footer-inner {
+                    flex-direction: column;
+                    text-align: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- ═══════════════════════════════════════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <nav class="nav" id="nav">
+            <div class="nav-inner">
+                <a href="#" class="nav-logo">
+                    <img
+                        src="assets/querencia-logo.svg"
+                        alt="Querencia Linux"
+                        height="28"
+                    />
+                </a>
+
+                <button
+                    class="nav-mobile-toggle"
+                    onclick="toggleMobileMenu()"
+                    aria-label="Menu"
+                >
+                    <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    >
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+
+                <div class="nav-links" id="navLinks">
+                    <a href="#features">Features</a>
+                    <a href="#architecture">Architecture</a>
+                    <a href="#software">Software</a>
+                    <a href="#install">Install</a>
+                    <a href="#faq">FAQ</a>
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        class="nav-cta"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            style="margin-right: 2px"
+                        >
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                            />
+                        </svg>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <header class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Where Linux<br />Feels at Home</h1>
+
+                <div class="hero-badges">
+                    <span class="badge">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <rect x="2" y="3" width="20" height="14" rx="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
+                        AlmaLinux 10
+                    </span>
+                    <span class="badge">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path
+                                d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                            />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        MATE Desktop
+                    </span>
+                    <span class="badge">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path
+                                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                            />
+                        </svg>
+                        Atomic &amp; Immutable
+                    </span>
+                    <span class="badge">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <polygon
+                                points="13 2 3 14 12 14 11 22 21 10 12 10"
+                            />
+                        </svg>
+                        AMD GPU
+                    </span>
+                </div>
+
+                <p class="hero-description">
+                    A <strong>bootable OCI container image</strong> that works
+                    as a complete Linux desktop. Atomic updates with automatic
+                    rollback, built on enterprise-grade AlmaLinux 10. Install
+                    apps with Flatpak, CLI tools with Micromamba, dev
+                    environments with Distrobox — no root required.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#install" class="btn btn-primary">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Get Started
+                    </a>
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        class="btn btn-secondary"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                            />
+                        </svg>
+                        View Source
+                    </a>
+                </div>
+
+                <div class="hero-terminal">
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                            <span class="terminal-title">mate-terminal</span>
+                        </div>
+                        <div class="terminal-body">
+                            <span class="comment"
+                                ># Install from any existing bootc system</span
+                            ><br />
+                            <span class="prompt">$ </span
+                            ><span class="command"
+                                >sudo bootc switch
+                                ghcr.io/endegelaende/querencia-linux:latest</span
+                            ><br />
+                            <span class="output">Pulling manifest...</span
+                            ><br />
+                            <span class="success"
+                                >✓ Queued for next boot. Previous image kept for
+                                rollback.</span
+                            ><br />
+                            <span class="prompt">$ </span
+                            ><span class="command">sudo reboot</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       FEATURES
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section id="features" class="section-alt">
+            <div class="section-inner">
+                <div class="section-header animate-on-scroll">
+                    <span class="section-label">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                            />
+                        </svg>
+                        Features
+                    </span>
+                    <h2 class="section-title">
+                        Everything you need, nothing you don't
+                    </h2>
+                    <p class="section-subtitle">
+                        A complete desktop with sensible defaults — ready to use
+                        from first boot.
+                    </p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon terracotta">🏠</div>
+                        <h3>MATE Desktop</h3>
+                        <p>
+                            Classic, lightweight, fast. BlueMenta theme, Noto
+                            fonts, Dracula terminal. Feels familiar from the
+                            first click.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon gold">🔒</div>
+                        <h3>Atomic &amp; Immutable</h3>
+                        <p>
+                            Read-only root filesystem powered by bootc. Updates
+                            are atomic — if anything breaks, roll back in
+                            seconds.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon green">🔄</div>
+                        <h3>Auto-Updates</h3>
+                        <p>
+                            System and Flatpak updates every 6 hours, silently
+                            in the background. Desktop notification when a
+                            reboot stages a new image.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon blue">🎮</div>
+                        <h3>AMD GPU</h3>
+                        <p>
+                            Mesa + Vulkan (RADV) + VA-API hardware decoding out
+                            of the box. Open-source amdgpu driver, no setup
+                            needed.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon terracotta">🎵</div>
+                        <h3>Full Multimedia</h3>
+                        <p>
+                            Complete codec support via RPM Fusion — GStreamer,
+                            FFmpeg, hardware-accelerated video. Just play your
+                            files.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon gold">🖨️</div>
+                        <h3>Printing &amp; Scanning</h3>
+                        <p>
+                            CUPS with Gutenprint/Foomatic drivers, SANE scanner
+                            backends, mDNS for <code>.local</code> network
+                            discovery.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon green">🌐</div>
+                        <h3>Networking</h3>
+                        <p>
+                            NetworkManager with WiFi, OpenVPN, WireGuard,
+                            Bluetooth (Blueman), and firewalld — all
+                            pre-configured.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon blue">🛡️</div>
+                        <h3>Security</h3>
+                        <p>
+                            SELinux enforcing with graphical troubleshooter,
+                            firewalld enabled, PolicyKit for admin dialogs.
+                            Enterprise-grade.
+                        </p>
+                    </div>
+
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon gray">🌍</div>
+                        <h3>12 Languages</h3>
+                        <p>
+                            Language packs for English, German, French, Spanish,
+                            Italian, Portuguese, Dutch, Polish, Russian,
+                            Japanese, Chinese, Korean.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       ARCHITECTURE
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section id="architecture">
+            <div class="section-inner">
+                <div class="section-header animate-on-scroll">
+                    <span class="section-label">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <rect x="2" y="2" width="20" height="8" rx="2" />
+                            <rect x="2" y="14" width="20" height="8" rx="2" />
+                            <line x1="6" y1="6" x2="6.01" y2="6" />
+                            <line x1="6" y1="18" x2="6.01" y2="18" />
+                        </svg>
+                        Architecture
+                    </span>
+                    <h2 class="section-title">
+                        Built in layers, updated as one
+                    </h2>
+                    <p class="section-subtitle">
+                        Your entire system is a single OCI image. Updates
+                        download a new image, stage it, and activate on reboot —
+                        the previous version is always kept.
+                    </p>
+                </div>
+
+                <div class="arch-diagram animate-on-scroll">
+                    <div class="arch-layer user">
+                        <strong>Your Apps</strong>
+                        <span class="arch-label"
+                            >Flatpak &middot; Distrobox &middot;
+                            Micromamba</span
+                        >
+                    </div>
+                    <div class="arch-layer desktop">
+                        <strong>MATE Desktop + LightDM + PipeWire</strong>
+                        <span class="arch-label"
+                            >Window Manager &middot; Display Manager &middot;
+                            Audio</span
+                        >
+                    </div>
+                    <div class="arch-layer gpu">
+                        <strong>Mesa + Vulkan RADV + VA-API + amdgpu</strong>
+                        <span class="arch-label"
+                            >Graphics &middot; Hardware Acceleration &middot;
+                            Firmware</span
+                        >
+                    </div>
+                    <div class="arch-layer base">
+                        <strong>AlmaLinux 10 bootc</strong>
+                        <span class="arch-label"
+                            >Immutable &middot; Atomic &middot;
+                            Image-based</span
+                        >
+                    </div>
+                    <div class="arch-layer kernel">
+                        <strong>Linux Kernel + Firmware</strong>
+                        <span class="arch-label">Hardware Support</span>
+                    </div>
+                </div>
+
+                <div
+                    style="
+                        text-align: center;
+                        margin-top: 2rem;
+                        animation: fade-up 0.6s ease 0.3s both;
+                    "
+                    class="animate-on-scroll"
+                >
+                    <p
+                        style="
+                            font-size: 0.88rem;
+                            color: var(--color-text-secondary);
+                            max-width: 520px;
+                            margin: 0 auto;
+                        "
+                    >
+                        <strong style="color: var(--color-text)"
+                            >Update flow:</strong
+                        >
+                        GitHub Push → CI builds image → Push to GHCR →
+                        <code>bootc upgrade</code> on your PC → Reboot (old
+                        image kept for rollback)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       SOFTWARE
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section id="software" class="section-alt">
+            <div class="section-inner">
+                <div class="section-header animate-on-scroll">
+                    <span class="section-label">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <line x1="3" y1="9" x2="21" y2="9" />
+                            <line x1="9" y1="21" x2="9" y2="9" />
+                        </svg>
+                        Installing Software
+                    </span>
+                    <h2 class="section-title">
+                        Three ways to install — no root required
+                    </h2>
+                    <p class="section-subtitle">
+                        The root filesystem is read-only. Software lives in user
+                        space — safe, isolated, and easy to manage.
+                    </p>
+                </div>
+
+                <div class="methods-grid">
+                    <div class="method-card animate-on-scroll">
+                        <span class="method-emoji">📦</span>
+                        <h3>Flatpak</h3>
+                        <div class="method-for">GUI Apps</div>
+                        <p>
+                            Sandboxed apps from Flathub.
+                            <strong>Warehouse</strong> is pre-installed as your
+                            app store.
+                        </p>
+                        <code>flatpak install flathub com.spotify.Client</code>
+                    </div>
+
+                    <div class="method-card animate-on-scroll">
+                        <span class="method-emoji">🐍</span>
+                        <h3>Micromamba</h3>
+                        <div class="method-for">CLI Tools &amp; Languages</div>
+                        <p>
+                            The <code>base</code> environment is always active.
+                            Install anything from conda-forge.
+                        </p>
+                        <code>micromamba install ripgrep python nodejs</code>
+                    </div>
+
+                    <div class="method-card animate-on-scroll">
+                        <span class="method-emoji">🐳</span>
+                        <h3>Distrobox</h3>
+                        <div class="method-for">Dev Environments</div>
+                        <p>
+                            Full mutable containers with <code>dnf</code>,
+                            <code>apt</code>, or any package manager.
+                        </p>
+                        <code>ujust distrobox-fedora</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       INSTALLATION
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section id="install">
+            <div class="section-inner">
+                <div class="section-header animate-on-scroll">
+                    <span class="section-label">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Installation
+                    </span>
+                    <h2 class="section-title">Up and running in minutes</h2>
+                    <p class="section-subtitle">
+                        Choose the method that fits your situation.
+                    </p>
+                </div>
+
+                <div class="install-tabs animate-on-scroll">
+                    <button
+                        class="install-tab active"
+                        onclick="switchTab('rebase')"
+                    >
+                        Rebase (existing system)
+                    </button>
+                    <button class="install-tab" onclick="switchTab('iso')">
+                        Fresh Install (ISO)
+                    </button>
+                    <button class="install-tab" onclick="switchTab('vm')">
+                        Test in a VM
+                    </button>
+                </div>
+
+                <div
+                    id="panel-rebase"
+                    class="install-panel active animate-on-scroll"
+                >
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Switch to Querencia</h4>
+                            <p>From any existing bootc or Atomic system:</p>
+                            <div class="terminal" style="margin-top: 0.75rem">
+                                <div class="terminal-body">
+                                    <span class="prompt">$ </span
+                                    ><span class="command"
+                                        >sudo bootc switch
+                                        ghcr.io/endegelaende/querencia-linux:latest</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Reboot</h4>
+                            <p>
+                                The new image activates on reboot. Your previous
+                                system is kept for rollback.
+                            </p>
+                            <div class="terminal" style="margin-top: 0.75rem">
+                                <div class="terminal-body">
+                                    <span class="prompt">$ </span
+                                    ><span class="command">sudo reboot</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Done!</h4>
+                            <p>
+                                LightDM greets you. On first login, Warehouse
+                                installs, Flathub connects, and your Micromamba
+                                <code>base</code> environment is ready.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-iso" class="install-panel">
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Get the ISO</h4>
+                            <p>
+                                Build it yourself with <code>make iso</code> on
+                                a Linux machine with Podman, or grab it from
+                                <a
+                                    href="https://github.com/endegelaende/querencia-linux/actions"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >GitHub Actions artifacts</a
+                                >.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Write to USB</h4>
+                            <p>
+                                Use Ventoy, Rufus, or <code>dd</code> to write
+                                the ISO to a USB drive.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Boot &amp; Install</h4>
+                            <p>
+                                The Anaconda installer guides you through
+                                language, keyboard, timezone, disk, and user
+                                creation. No hardcoded defaults — you choose
+                                everything.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Reboot into LightDM</h4>
+                            <p>Remove the USB, reboot, and you're home.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-vm" class="install-panel">
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Build a QCOW2 image</h4>
+                            <div class="terminal" style="margin-top: 0.75rem">
+                                <div class="terminal-body">
+                                    <span class="prompt">$ </span
+                                    ><span class="command">make qcow2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Boot in QEMU</h4>
+                            <div class="terminal" style="margin-top: 0.75rem">
+                                <div class="terminal-body">
+                                    <span class="prompt">$ </span
+                                    ><span class="command"
+                                        >make run-qemu-qcow</span
+                                    >
+                                </div>
+                            </div>
+                            <p style="margin-top: 0.5rem">
+                                VM display drivers (QXL, VESA, spice-vdagent)
+                                are included.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       DESKTOP DEFAULTS
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section class="section-alt">
+            <div class="section-inner">
+                <div class="section-header animate-on-scroll">
+                    <span class="section-label">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                            />
+                        </svg>
+                        Defaults
+                    </span>
+                    <h2 class="section-title">Sensible out of the box</h2>
+                    <p class="section-subtitle">
+                        System-wide defaults that every user can override
+                        individually.
+                    </p>
+                </div>
+
+                <div class="defaults-grid">
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">🎨</span>
+                        <div>
+                            <div class="label">GTK Theme</div>
+                            <div class="value">BlueMenta</div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">🔤</span>
+                        <div>
+                            <div class="label">Fonts</div>
+                            <div class="value">
+                                Noto Sans 10, Noto Sans Mono 10
+                            </div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">🪟</span>
+                        <div>
+                            <div class="label">Window Manager</div>
+                            <div class="value">Marco (compositing enabled)</div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">💻</span>
+                        <div>
+                            <div class="label">Terminal</div>
+                            <div class="value">
+                                Dracula colors, unlimited scrollback
+                            </div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">🖥️</span>
+                        <div>
+                            <div class="label">Workspaces</div>
+                            <div class="value">4</div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">⌨️</span>
+                        <div>
+                            <div class="label">Keyboard</div>
+                            <div class="value">
+                                Your choice (set during install)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">📂</span>
+                        <div>
+                            <div class="label">File Manager</div>
+                            <div class="value">Caja — list view, bookmarks</div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">📸</span>
+                        <div>
+                            <div class="label">Screenshots</div>
+                            <div class="value">
+                                Print = full, Alt = window, Shift = area
+                            </div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">🔊</span>
+                        <div>
+                            <div class="label">Audio</div>
+                            <div class="value">
+                                PipeWire + WirePlumber + pavucontrol
+                            </div>
+                        </div>
+                    </div>
+                    <div class="default-item animate-on-scroll">
+                        <span class="default-icon">🌙</span>
+                        <div>
+                            <div class="label">Night Mode</div>
+                            <div class="value">Redshift in system tray</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       FAQ
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section id="faq">
+            <div class="section-inner">
+                <div class="section-header animate-on-scroll">
+                    <span class="section-label">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        FAQ
+                    </span>
+                    <h2 class="section-title">Frequently asked questions</h2>
+                </div>
+
+                <div class="faq-list">
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Can I still use dnf?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                No — the root filesystem is read-only. Use
+                                <strong>Micromamba</strong> for CLI tools and
+                                languages, <strong>Flatpak</strong> for GUI
+                                apps, or <strong>Distrobox</strong> for full
+                                mutable environments with dnf/apt.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            What happens if an update breaks?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                <code>ujust rollback</code> (or
+                                <code>sudo bootc rollback</code>) switches back
+                                to the previous image instantly. You can also
+                                pick it from the GRUB boot menu.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Does my AMD GPU work?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                Any GPU supported by the open-source
+                                <code>amdgpu</code> driver works out of the box
+                                — Mesa, Vulkan (RADV), VA-API hardware decoding
+                                are all included. Run
+                                <code>ujust gpu-info</code> to check.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Where do the MATE packages come from?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                From our own COPR:
+                                <a
+                                    href="https://copr.fedorainfracloud.org/coprs/winonaoctober/MateDesktop-EL10/"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >winonaoctober/MateDesktop-EL10</a
+                                >
+                                — 128 packages, all under our control. 111 are
+                                built from Fedora distgit, 5 from our own GitHub
+                                forks, and 11 are stable upload SRPMs.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Can I use Wayland?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                Not with MATE — it requires Xorg. LightDM starts
+                                an Xorg session. Wayland support would require
+                                switching to a different desktop environment.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Where is the software store?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                <strong>Warehouse</strong> is installed
+                                automatically on first login. Find it in your
+                                application menu — it shows Flatpak apps from
+                                Flathub.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Why MATE and not GNOME or KDE?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                MATE is lightweight, classic, and fast.
+                                AlmaLinux already provides official GNOME and
+                                KDE atomic images. Querencia fills the MATE gap
+                                — a complete, polished MATE desktop that just
+                                works.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item animate-on-scroll">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            How is this different from Universal Blue?
+                            <svg
+                                class="faq-chevron"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>
+                                Querencia is built on
+                                <strong>AlmaLinux 10</strong>
+                                (enterprise-stable, RHEL-compatible) with
+                                <strong>MATE Desktop</strong>. Universal Blue is
+                                built on <strong>Fedora</strong> (rolling,
+                                bleeding-edge) with GNOME or KDE. Different
+                                philosophy: we optimize for stability and
+                                reliability over new features.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       CTA
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <section class="cta-section">
+            <div class="cta-box animate-on-scroll">
+                <h2>Ready to feel at home?</h2>
+                <p>One command to switch. Rollback anytime.</p>
+                <div
+                    style="
+                        display: flex;
+                        gap: 0.75rem;
+                        justify-content: center;
+                        flex-wrap: wrap;
+                    "
+                >
+                    <a href="#install" class="btn btn-primary">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Get Started
+                    </a>
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        class="btn btn-secondary"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                            />
+                        </svg>
+                        View Source
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-left">
+                    © 2025 Querencia Linux ·
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux/blob/main/LICENSE"
+                        target="_blank"
+                        rel="noopener"
+                        >MIT License</a
+                    >
+                    · <a href="privacy.html">Privacy</a>
+                </div>
+                <div class="footer-links">
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        target="_blank"
+                        rel="noopener"
+                        >GitHub</a
+                    >
+                    <a
+                        href="https://ghcr.io/endegelaende/querencia-linux"
+                        target="_blank"
+                        rel="noopener"
+                        >Container Image</a
+                    >
+                    <a
+                        href="https://copr.fedorainfracloud.org/coprs/winonaoctober/MateDesktop-EL10/"
+                        target="_blank"
+                        rel="noopener"
+                        >COPR</a
+                    >
+                </div>
+            </div>
+        </footer>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+       SCRIPTS
+       ═══════════════════════════════════════════════════════════════════ -->
+
+        <script>
+            // Navigation scroll effect
+            const nav = document.getElementById("nav");
+            window.addEventListener("scroll", () => {
+                nav.classList.toggle("scrolled", window.scrollY > 20);
+            });
+
+            // Mobile menu toggle
+            function toggleMobileMenu() {
+                document.getElementById("navLinks").classList.toggle("open");
+            }
+
+            // Close mobile menu on link click
+            document.querySelectorAll("#navLinks a").forEach((link) => {
+                link.addEventListener("click", () => {
+                    document
+                        .getElementById("navLinks")
+                        .classList.remove("open");
+                });
+            });
+
+            // Installation tabs
+            function switchTab(tab) {
+                document
+                    .querySelectorAll(".install-tab")
+                    .forEach((t) => t.classList.remove("active"));
+                document
+                    .querySelectorAll(".install-panel")
+                    .forEach((p) => p.classList.remove("active"));
+                event.target.classList.add("active");
+                document.getElementById("panel-" + tab).classList.add("active");
+            }
+
+            // FAQ accordion
+            function toggleFaq(btn) {
+                const item = btn.parentElement;
+                const wasOpen = item.classList.contains("open");
+                // Close all
+                document
+                    .querySelectorAll(".faq-item")
+                    .forEach((i) => i.classList.remove("open"));
+                // Toggle clicked
+                if (!wasOpen) item.classList.add("open");
+            }
+
+            // Scroll animation (Intersection Observer)
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                        }
+                    });
+                },
+                {
+                    threshold: 0.1,
+                    rootMargin: "0px 0px -40px 0px",
+                },
+            );
+
+            document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+                observer.observe(el);
+            });
+        </script>
+    </body>
+</html>
