@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hardware Support — Querencia Linux Docs</title>
+        <meta
+            name="description"
+            content="GPU, audio, printing, scanning, Bluetooth, WiFi, USB-C, and monitor support for Querencia Linux"
+        />
+        <style>
+            @font-face {
+                font-family: "Inter";
+                font-style: normal;
+                font-weight: 300 900;
+                font-display: swap;
+                src: url("../fonts/inter-variable.woff2") format("woff2");
+            }
+            @font-face {
+                font-family: "JetBrains Mono";
+                font-style: normal;
+                font-weight: 400 700;
+                font-display: swap;
+                src: url("../fonts/jetbrains-mono-variable.woff2")
+                    format("woff2");
+            }
+        </style>
+        <style>
+            :root {
+                --color-cream: #fffbf5;
+                --color-warm-white: #fef9f3;
+                --color-sand: #f5ede4;
+                --color-sand-dark: #e8ded1;
+                --color-terracotta: #c75230;
+                --color-terracotta-light: #f4bdad;
+                --color-terracotta-dark: #a33d1e;
+                --color-terracotta-bg: #fdf0ec;
+                --color-text: #3d2e1f;
+                --color-text-secondary: #6b5b4d;
+                --color-text-muted: #9c8b7a;
+                --color-border: #e8ded1;
+                --color-border-light: #f0e8dd;
+                --font-sans:
+                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, sans-serif;
+                --font-mono:
+                    "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+            }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html {
+                font-size: 16px;
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: var(--font-sans);
+                background: var(--color-cream);
+                color: var(--color-text);
+                -webkit-font-smoothing: antialiased;
+                line-height: 1.6;
+            }
+            ::selection {
+                background: var(--color-terracotta);
+                color: white;
+            }
+            a {
+                color: var(--color-terracotta);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            a:hover {
+                color: var(--color-terracotta-dark);
+            }
+            .docs-nav {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                background: rgba(255, 251, 245, 0.92);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--color-border-light);
+            }
+            .docs-nav-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0.75rem 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .docs-nav-logo {
+                display: flex;
+                align-items: center;
+            }
+            .docs-nav-logo img {
+                height: 24px;
+            }
+            .docs-nav-links {
+                display: flex;
+                gap: 1.5rem;
+                align-items: center;
+            }
+            .docs-nav-links a {
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--color-text-secondary);
+            }
+            .docs-nav-links a:hover {
+                color: var(--color-terracotta);
+            }
+            .docs-layout {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                min-height: calc(100vh - 120px);
+            }
+            .docs-sidebar {
+                width: 240px;
+                flex-shrink: 0;
+                padding: 2rem 1.5rem;
+                border-right: 1px solid var(--color-border-light);
+                position: sticky;
+                top: 57px;
+                height: calc(100vh - 57px);
+                overflow-y: auto;
+            }
+            .docs-sidebar-title {
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--color-text-muted);
+                margin-bottom: 1rem;
+            }
+            .docs-sidebar-link {
+                display: block;
+                padding: 0.4rem 0.75rem;
+                margin: 0.15rem 0;
+                font-size: 0.9rem;
+                color: var(--color-text-secondary);
+                border-radius: 6px;
+                transition: all 0.15s;
+            }
+            .docs-sidebar-link:hover {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                text-decoration: none;
+            }
+            .docs-sidebar-link.active {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                font-weight: 600;
+            }
+            .docs-content {
+                flex: 1;
+                min-width: 0;
+                padding: 2.5rem 3rem 4rem;
+                max-width: 800px;
+            }
+            .docs-content h1 {
+                font-size: 2rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+                color: var(--color-text);
+            }
+            .docs-content .subtitle {
+                font-size: 1.05rem;
+                color: var(--color-text-muted);
+                margin-bottom: 2rem;
+                font-style: italic;
+            }
+            .docs-content h2 {
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-top: 2.5rem;
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 1px solid var(--color-border-light);
+                color: var(--color-text);
+            }
+            .docs-content h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-top: 1.75rem;
+                margin-bottom: 0.5rem;
+                color: var(--color-text);
+            }
+            .docs-content h4 {
+                font-size: 0.95rem;
+                font-weight: 600;
+                margin-top: 1.5rem;
+                margin-bottom: 0.4rem;
+                color: var(--color-text-secondary);
+            }
+            .docs-content p {
+                font-size: 0.95rem;
+                color: var(--color-text-secondary);
+                line-height: 1.75;
+                margin-bottom: 1rem;
+            }
+            .docs-content strong {
+                color: var(--color-text);
+                font-weight: 600;
+            }
+            .docs-content ul,
+            .docs-content ol {
+                padding-left: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .docs-content li {
+                font-size: 0.95rem;
+                color: var(--color-text-secondary);
+                line-height: 1.75;
+                margin-bottom: 0.35rem;
+            }
+            .docs-content code {
+                font-family: var(--font-mono);
+                background: var(--color-sand);
+                padding: 0.15em 0.4em;
+                border-radius: 4px;
+                font-size: 0.88em;
+                color: var(--color-terracotta-dark);
+            }
+            .docs-content pre {
+                background: #282a36;
+                color: #f8f8f2;
+                padding: 1.25rem 1.5rem;
+                border-radius: 8px;
+                overflow-x: auto;
+                margin-bottom: 1.25rem;
+                font-size: 0.88rem;
+                line-height: 1.6;
+            }
+            .docs-content pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+                font-size: inherit;
+            }
+            .docs-content blockquote {
+                border-left: 3px solid var(--color-terracotta-light);
+                padding: 0.75rem 1.25rem;
+                margin: 1rem 0 1.25rem;
+                background: var(--color-warm-white);
+                border-radius: 0 6px 6px 0;
+            }
+            .docs-content blockquote p {
+                color: var(--color-text-secondary);
+                margin-bottom: 0.25rem;
+            }
+            .docs-content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1.25rem;
+                font-size: 0.9rem;
+            }
+            .docs-content th {
+                text-align: left;
+                padding: 0.6rem 0.75rem;
+                background: var(--color-sand);
+                color: var(--color-text);
+                font-weight: 600;
+                border-bottom: 2px solid var(--color-border);
+            }
+            .docs-content td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid var(--color-border-light);
+                color: var(--color-text-secondary);
+            }
+            .docs-content hr {
+                border: none;
+                border-top: 1px solid var(--color-border-light);
+                margin: 2.5rem 0;
+            }
+            .docs-footer {
+                text-align: center;
+                padding: 2rem 1.5rem;
+                border-top: 1px solid var(--color-border-light);
+                font-size: 0.85rem;
+                color: var(--color-text-muted);
+            }
+            .docs-footer a {
+                color: var(--color-text-muted);
+            }
+            .docs-footer a:hover {
+                color: var(--color-terracotta);
+            }
+            @media (max-width: 768px) {
+                .docs-sidebar {
+                    display: none;
+                }
+                .docs-content {
+                    padding: 1.5rem 1.25rem 3rem;
+                }
+                .docs-content h1 {
+                    font-size: 1.5rem;
+                }
+                .docs-content h2 {
+                    font-size: 1.15rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="docs-nav">
+            <div class="docs-nav-inner">
+                <a href="/" class="docs-nav-logo"
+                    ><img
+                        src="../assets/querencia-logo.svg"
+                        alt="Querencia Linux"
+                        height="24"
+                /></a>
+                <div class="docs-nav-links">
+                    <a href="/docs/">Docs</a>
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        target="_blank"
+                        rel="noopener"
+                        >GitHub</a
+                    >
+                </div>
+            </div>
+        </nav>
+        <div class="docs-layout">
+            <aside class="docs-sidebar">
+                <nav class="docs-sidebar-nav">
+                    <div class="docs-sidebar-title">Documentation</div>
+                    <a href="/docs/" class="docs-sidebar-link">Overview</a>
+                    <a
+                        href="/docs/getting-started.html"
+                        class="docs-sidebar-link"
+                        >Getting Started</a
+                    >
+                    <a
+                        href="/docs/installing-software.html"
+                        class="docs-sidebar-link"
+                        >Installing Software</a
+                    >
+                    <a href="/docs/updates.html" class="docs-sidebar-link"
+                        >Updates &amp; Maintenance</a
+                    >
+                    <a
+                        href="/docs/hardware.html"
+                        class="docs-sidebar-link active"
+                        >Hardware Support</a
+                    >
+                    <a href="/docs/faq.html" class="docs-sidebar-link">FAQ</a>
+                </nav>
+            </aside>
+            <main class="docs-content">
+                <h1>Hardware Support</h1>
+                <p class="subtitle">
+                    GPU, audio, printing, scanning, Bluetooth, WiFi, USB-C, and
+                    monitor support
+                </p>
+
+                <p>
+                    Querencia Linux comes with drivers and firmware
+                    pre-installed for a wide range of hardware. This guide
+                    covers what's included and how to verify things are working.
+                </p>
+
+                <hr />
+
+                <h2 id="gpu">GPU</h2>
+
+                <p>
+                    Querencia Linux ships in two variants —
+                    <strong>AMD</strong> (default) and <strong>NVIDIA</strong> —
+                    each with a purpose-built GPU stack. Pick the one that
+                    matches your graphics card.
+                </p>
+
+                <h3 id="amd-default-variant">AMD (Default Variant)</h3>
+
+                <p>
+                    Image:
+                    <code>ghcr.io/endegelaende/querencia-linux:latest</code>
+                </p>
+
+                <p>
+                    The AMD variant includes everything you need out of the box:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>Mesa</strong> — OpenGL and Vulkan (RADV) drivers
+                    </li>
+                    <li>
+                        <strong>VA-API</strong> — hardware video decoding
+                        (Firefox uses this automatically)
+                    </li>
+                    <li>
+                        <strong>linux-firmware</strong> — GPU microcode and
+                        firmware blobs
+                    </li>
+                    <li>
+                        <strong>amdgpu kernel driver</strong> — modern kernel
+                        driver for GCN and RDNA GPUs
+                    </li>
+                    <li>
+                        <strong>Xorg DDX drivers</strong> —
+                        <code>xorg-x11-drv-amdgpu</code> (modern) and
+                        <code>xorg-x11-drv-ati</code> (legacy)
+                    </li>
+                </ul>
+
+                <p>
+                    <strong>Legacy AMD GPUs</strong> (HD 7000 / R5 200 / R7 200
+                    / R9 200 / R7 300 / R9 300 series) are supported via the
+                    <code>amdgpu</code> kernel driver with GCN 1.0 (Southern
+                    Islands) and GCN 2.0 (Sea Islands) support enabled. The
+                    older <code>radeon</code> driver is disabled for these chips
+                    so that <code>amdgpu</code> handles them instead — this is
+                    configured automatically.
+                </p>
+
+                <p>
+                    <strong>Power management</strong> is fully unlocked
+                    (<code>ppfeaturemask=0xffffffff</code>), which means you can
+                    adjust fan curves, undervolt, and tweak power limits if you
+                    want to. The default behavior is automatic and safe — you
+                    only need to touch this if you're a power user.
+                </p>
+
+                <h4 id="check-your-gpu-amd">Check your GPU</h4>
+
+                <pre><code>ujust gpu-info            # driver, Vulkan, VA-API status
+ujust gpu-sensors         # one-shot sensor readings (temp, power, VRAM)
+ujust gpu-monitor         # live monitoring (Ctrl+C to exit)
+ujust gpu-test            # run Vulkan test (vkcube)</code></pre>
+
+                <h4 id="power-profiles-amd">Power profiles (AMD)</h4>
+
+                <pre><code>ujust gpu-performance     # high performance mode
+ujust gpu-powersave       # power saving mode
+ujust gpu-auto            # automatic (default)</code></pre>
+
+                <p>
+                    These set the kernel power profile for the GPU. The default
+                    (<code>auto</code>) is fine for most use cases — the GPU
+                    clocks up under load and idles quietly otherwise.
+                </p>
+
+                <h3 id="nvidia-variant">NVIDIA Variant</h3>
+
+                <p>
+                    Image:
+                    <code
+                        >ghcr.io/endegelaende/querencia-linux-nvidia:latest</code
+                    >
+                </p>
+
+                <p>
+                    The NVIDIA variant uses
+                    <strong>AlmaLinux's official NVIDIA support</strong> —
+                    pre-compiled, Secure Boot signed kernel modules. No manual
+                    driver installation needed.
+                </p>
+
+                <p>Included:</p>
+
+                <ul>
+                    <li>
+                        <strong>nvidia-open-kmod</strong> — open-source NVIDIA
+                        kernel module (Secure Boot signed by AlmaLinux)
+                    </li>
+                    <li>
+                        <strong>nvidia-driver</strong> — NVIDIA proprietary
+                        userspace (libGL, Xorg driver, settings)
+                    </li>
+                    <li>
+                        <strong>nvidia-driver-cuda</strong> — CUDA support and
+                        <code>nvidia-smi</code>
+                    </li>
+                    <li>
+                        <strong>switcheroo-control</strong> — hybrid GPU
+                        switching for laptops with Intel/AMD iGPU + NVIDIA dGPU
+                    </li>
+                    <li>
+                        <strong>Mesa</strong> — fallback drivers for non-NVIDIA
+                        outputs and software rendering
+                    </li>
+                </ul>
+
+                <p>
+                    The <code>nouveau</code> driver is blacklisted at every
+                    level (modprobe, initramfs, kernel command line) to prevent
+                    conflicts. NVIDIA DRM modesetting is enabled for smooth VT
+                    switching and proper suspend/resume.
+                </p>
+
+                <h4 id="check-your-gpu-nvidia">Check your GPU</h4>
+
+                <p>
+                    The same <code>ujust</code> commands work on both variants —
+                    they auto-detect whether AMD or NVIDIA hardware is present:
+                </p>
+
+                <pre><code>ujust gpu-info            # driver version, loaded modules, Vulkan, nouveau status
+ujust gpu-sensors         # one-shot readings (temp, VRAM, utilization, power, fan, clocks)
+ujust gpu-monitor         # live monitoring via nvidia-smi (Ctrl+C to exit)
+ujust gpu-test            # run Vulkan test (vkcube)</code></pre>
+
+                <h4 id="power-profiles-nvidia">Power profiles (NVIDIA)</h4>
+
+                <pre><code>ujust gpu-performance     # persistence mode ON, power limit to maximum
+ujust gpu-powersave       # power limit to minimum (clocks reduce under load)
+ujust gpu-auto            # reset to defaults (persistence OFF, clocks reset)</code></pre>
+
+                <h4 id="verify-nvidia-is-working">Verify NVIDIA is working</h4>
+
+                <pre><code>nvidia-smi                # GPU status, temperature, driver version
+lsmod | grep nvidia       # should show: nvidia, nvidia_modeset, nvidia_uvm, nvidia_drm
+lsmod | grep nouveau      # should be empty (nouveau is blacklisted)
+cat /proc/cmdline         # should contain: rd.driver.blacklist=nouveau modprobe.blacklist=nouveau nvidia-drm.modeset=1</code></pre>
+
+                <h4 id="hybrid-gpu-laptops">Hybrid GPU laptops</h4>
+
+                <p>
+                    If your laptop has both an integrated GPU (Intel or AMD) and
+                    a discrete NVIDIA GPU, <code>switcheroo-control</code> is
+                    enabled automatically. Desktop applications can offer a
+                    "Launch using Discrete GPU" option. You can also force an
+                    app to use the NVIDIA GPU:
+                </p>
+
+                <pre><code>switcherooctl launch &lt;command&gt;</code></pre>
+
+                <h3 id="virtual-machines">Virtual Machines</h3>
+
+                <p>
+                    VM display drivers are included out of the box:
+                    <strong>QXL</strong>, <strong>VESA</strong>,
+                    <strong>fbdev</strong>, and <strong>spice-vdagent</strong>.
+                    Querencia Linux works in QEMU/KVM, VirtualBox, and VMware
+                    without any extra configuration.
+                </p>
+
+                <hr />
+
+                <h2 id="audio">Audio</h2>
+
+                <ul>
+                    <li>
+                        <strong>PipeWire</strong> with PulseAudio and ALSA
+                        compatibility layers
+                    </li>
+                    <li><strong>WirePlumber</strong> session manager</li>
+                    <li>
+                        <strong>pavucontrol</strong> for GUI volume control
+                        (System → Sound &amp; Video → PulseAudio Volume Control)
+                    </li>
+                </ul>
+
+                <p>
+                    Audio runs as a per-user service — it starts automatically
+                    when you log in. No setup needed.
+                </p>
+
+                <p>If audio isn't working, check that PipeWire is running:</p>
+
+                <pre><code>systemctl --user status pipewire.socket
+systemctl --user status wireplumber.service</code></pre>
+
+                <hr />
+
+                <h2 id="printing">Printing</h2>
+
+                <ul>
+                    <li>
+                        <strong>CUPS</strong> is pre-installed and
+                        socket-activated (starts on demand, not wasting
+                        resources when idle)
+                    </li>
+                    <li>
+                        <strong>Drivers:</strong> Gutenprint + Foomatic (covers
+                        the vast majority of printers)
+                    </li>
+                    <li>
+                        <strong>Network discovery:</strong> Avahi/mDNS is
+                        configured — network printers are discovered
+                        automatically
+                    </li>
+                </ul>
+
+                <h3 id="printing-setup">Setup</h3>
+
+                <pre><code>ujust printer-setup       # opens the graphical printer configuration tool
+ujust printer-status      # shows CUPS status and configured printers</code></pre>
+
+                <p>
+                    Or go to
+                    <strong>System → Administration → Printing</strong> in the
+                    menu.
+                </p>
+
+                <h3 id="network-printers">Network printers</h3>
+
+                <p>
+                    mDNS name resolution is configured in
+                    <code>nsswitch.conf</code>, so <code>.local</code> hostnames
+                    work system-wide. If your printer advertises itself as
+                    <code>myprinter.local</code>, you can reach it from any
+                    application — including the browser at
+                    <code>http://myprinter.local:631</code>.
+                </p>
+
+                <p>
+                    This also means <code>ping somedevice.local</code> and
+                    <code>ssh pi.local</code> work out of the box.
+                </p>
+
+                <hr />
+
+                <h2 id="scanning">Scanning</h2>
+
+                <ul>
+                    <li>
+                        <strong>SANE</strong> backends are installed for USB and
+                        network scanners
+                    </li>
+                </ul>
+
+                <p>
+                    Install <strong>Simple Scan</strong> for a graphical
+                    scanning interface:
+                </p>
+
+                <pre><code>ujust install-essentials    # includes Simple Scan along with other recommended apps</code></pre>
+
+                <p>Or install it individually:</p>
+
+                <pre><code>flatpak install flathub org.gnome.SimpleScan</code></pre>
+
+                <p>Check if your scanner is detected:</p>
+
+                <pre><code>scanimage -L</code></pre>
+
+                <p>
+                    If your scanner doesn't show up, make sure it's connected
+                    via USB or on the same network, and that the SANE backend
+                    for your model is supported. Most major brands (HP, Epson,
+                    Canon, Brother) work.
+                </p>
+
+                <hr />
+
+                <h2 id="bluetooth">Bluetooth</h2>
+
+                <ul>
+                    <li><strong>BlueZ</strong> — the Linux Bluetooth stack</li>
+                    <li>
+                        <strong>Blueman</strong> — graphical Bluetooth manager
+                        (system tray icon)
+                    </li>
+                </ul>
+
+                <p>
+                    Bluetooth is enabled by default. Click the Bluetooth icon in
+                    the system tray to pair devices, or use the command line:
+                </p>
+
+                <pre><code>bluetoothctl scan on      # discover nearby devices
+bluetoothctl pair &lt;MAC&gt;   # pair a device
+bluetoothctl connect &lt;MAC&gt;</code></pre>
+
+                <hr />
+
+                <h2 id="wifi--networking">WiFi &amp; Networking</h2>
+
+                <ul>
+                    <li>
+                        <strong>NetworkManager</strong> — manages all network
+                        connections
+                    </li>
+                    <li>
+                        <strong>NM applet</strong> — system tray icon for quick
+                        access to WiFi, VPN, and wired connections
+                    </li>
+                    <li>
+                        <strong>WiFi</strong> —
+                        <code>NetworkManager-wifi</code> is pre-installed; most
+                        WiFi chipsets work out of the box
+                    </li>
+                </ul>
+
+                <h3 id="vpn">VPN</h3>
+
+                <p>
+                    Both <strong>OpenVPN</strong> and
+                    <strong>WireGuard</strong> are included with NetworkManager
+                    plugins, so they appear directly in the network menu:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>OpenVPN:</strong> Import
+                        <code>.ovpn</code> files via the NM applet → VPN
+                        Connections → Configure VPN
+                    </li>
+                    <li>
+                        <strong>WireGuard:</strong> The kernel module is
+                        built-in (Linux 5.6+). Import configs via NM or use
+                        <code>wg-quick</code> from <code>wireguard-tools</code>
+                    </li>
+                </ul>
+
+                <h3 id="firewall">Firewall</h3>
+
+                <p>
+                    <strong>firewalld</strong> is enabled by default with
+                    sensible defaults (public zone, most ports closed).
+                </p>
+
+                <pre><code>ujust firewall-status          # current rules and allowed services
+ujust firewall-allow ssh       # open a service
+ujust firewall-block ssh       # close it</code></pre>
+
+                <hr />
+
+                <h2 id="usb-c-docks--usb-ethernet">
+                    USB-C Docks &amp; USB Ethernet
+                </h2>
+
+                <p>
+                    Realtek USB Ethernet adapters — the kind found in most USB-C
+                    docks — are auto-configured via udev rules. This covers
+                    common docks from Lenovo, TP-Link, Samsung, and generic
+                    Realtek-based dongles.
+                </p>
+
+                <p>
+                    The <code>usb_modeswitch</code> tool is installed to handle
+                    adapters that need a mode switch before they function as
+                    network devices. This all happens automatically when you
+                    plug in.
+                </p>
+
+                <hr />
+
+                <h2 id="apple-usb-superdrive">Apple USB SuperDrive</h2>
+
+                <p>
+                    The Apple USB SuperDrive requires a special initialization
+                    command before it will read discs. A udev rule handles this
+                    automatically — just plug it in and it works.
+                </p>
+
+                <hr />
+
+                <h2 id="ios-devices">iOS Devices</h2>
+
+                <p>
+                    iPhones and iPads can be mounted and accessed for file
+                    transfer:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>libimobiledevice</strong> — protocol library for
+                        iOS communication
+                    </li>
+                    <li>
+                        <strong>ifuse</strong> — FUSE filesystem for mounting
+                        iOS devices
+                    </li>
+                    <li>
+                        <strong>usbmuxd</strong> — USB multiplexing daemon
+                        (starts automatically)
+                    </li>
+                </ul>
+
+                <p>
+                    Plug in your device, trust the computer on the iOS prompt,
+                    and it should appear in Caja (the file manager).
+                </p>
+
+                <hr />
+
+                <h2 id="monitor-control">Monitor Control</h2>
+
+                <p>
+                    <strong>ddcutil</strong> is installed for controlling
+                    external monitors over DDC/CI — the protocol that lets your
+                    computer talk to your monitor's on-screen display.
+                </p>
+
+                <pre><code>ddcutil detect                # list connected monitors
+ddcutil getvcp 10             # read current brightness
+ddcutil setvcp 10 50          # set brightness to 50%
+ddcutil setvcp 12 75          # set contrast to 75%</code></pre>
+
+                <p>
+                    This works with most monitors connected via HDMI or
+                    DisplayPort. Some monitors need DDC/CI enabled in their OSD
+                    settings first.
+                </p>
+
+                <blockquote>
+                    <p>
+                        <strong>Note:</strong> ddcutil requires the
+                        <code>i2c-dev</code> kernel module. If
+                        <code>ddcutil detect</code> shows nothing, try
+                        <code>sudo modprobe i2c-dev</code> and run it again.
+                    </p>
+                </blockquote>
+
+                <hr />
+
+                <h2 id="power-management">Power Management</h2>
+
+                <p>
+                    <strong>powertop</strong> is included for analyzing and
+                    tuning power consumption on laptops:
+                </p>
+
+                <pre><code>sudo powertop                 # interactive power analysis
+sudo powertop --auto-tune     # apply all recommended power-saving settings</code></pre>
+
+                <p>
+                    The system also uses <strong>ZRAM</strong> (compressed swap
+                    in RAM) with zstd compression at 50% of RAM. Together with a
+                    swappiness of 180 (tuned for ZRAM — no disk penalty), this
+                    gives you effective memory expansion without touching your
+                    SSD. Check it with:
+                </p>
+
+                <pre><code>swapon --show                 # should show a /dev/zram0 device</code></pre>
+
+                <hr />
+
+                <h2 id="night-mode">Night Mode</h2>
+
+                <p>
+                    <strong>Redshift</strong> is installed for reducing blue
+                    light in the evening. Find <strong>Redshift</strong> in the
+                    application menu (System Tray), or run:
+                </p>
+
+                <pre><code>redshift-gtk &amp;                # starts with a system tray icon</code></pre>
+
+                <p>
+                    Redshift adjusts your screen color temperature based on your
+                    location and time of day. It needs location access to work —
+                    you can configure coordinates in
+                    <code>~/.config/redshift.conf</code> if automatic detection
+                    doesn't work.
+                </p>
+
+                <hr />
+
+                <h2 id="troubleshooting">Troubleshooting</h2>
+
+                <h3 id="something-isnt-working">Something isn't working?</h3>
+
+                <p>A few things to check:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symptom</th>
+                            <th>Try this</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>No GPU acceleration</td>
+                            <td>
+                                <code>ujust gpu-info</code> — check if the
+                                driver is loaded
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>No sound</td>
+                            <td>
+                                <code>pavucontrol</code> — check output device
+                                and volume
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>WiFi not showing</td>
+                            <td>
+                                <code>nmcli device status</code> — check if the
+                                adapter is recognized
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bluetooth not pairing</td>
+                            <td>
+                                <code>systemctl status bluetooth</code> — is the
+                                service running?
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Printer not found</td>
+                            <td>
+                                <code>ujust printer-status</code> — is CUPS
+                                running? Is the printer on the network?
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Scanner not detected</td>
+                            <td>
+                                <code>scanimage -L</code> — does SANE see the
+                                device?
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Monitor brightness control not working</td>
+                            <td>
+                                <code>ddcutil detect</code> — is DDC/CI enabled
+                                on the monitor?
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>USB-C dock Ethernet not working</td>
+                            <td>
+                                <code>dmesg | tail -20</code> — check for USB
+                                device recognition
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>SELinux blocking something</td>
+                            <td>
+                                Check the SELinux Troubleshooter notifications
+                                (pre-installed)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 id="checking-system-logs">Checking system logs</h3>
+
+                <pre><code>ujust logs                    # last 50 lines of current boot
+journalctl -b -p err          # errors only from current boot
+dmesg | grep -i firmware      # firmware loading messages
+dmesg | grep -i error         # hardware errors</code></pre>
+
+                <h3 id="reporting-issues">Reporting issues</h3>
+
+                <p>
+                    If your hardware isn't supported, open an issue at
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux/issues"
+                        target="_blank"
+                        rel="noopener"
+                        >github.com/endegelaende/querencia-linux/issues</a
+                    >
+                    with the output of:
+                </p>
+
+                <pre><code>ujust gpu-info                # GPU details
+lspci -nn                     # all PCI devices with vendor/device IDs
+lsusb                         # all USB devices
+uname -r                      # kernel version
+cat /etc/os-release           # image version</code></pre>
+            </main>
+        </div>
+        <footer class="docs-footer">
+            <p>
+                &copy; 2026 Querencia Linux &middot;
+                <a
+                    href="https://github.com/endegelaende/querencia-linux/blob/main/LICENSE"
+                    target="_blank"
+                    rel="noopener"
+                    >MIT License</a
+                >
+                &middot; <a href="/privacy.html">Privacy</a>
+            </p>
+        </footer>
+    </body>
+</html>

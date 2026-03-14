@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>FAQ — Querencia Linux Docs</title>
+        <meta
+            name="description"
+            content="Frequently asked questions about Querencia Linux — installation, updates, software, GPU, and more"
+        />
+        <style>
+            @font-face {
+                font-family: "Inter";
+                font-style: normal;
+                font-weight: 300 900;
+                font-display: swap;
+                src: url("../fonts/inter-variable.woff2") format("woff2");
+            }
+            @font-face {
+                font-family: "JetBrains Mono";
+                font-style: normal;
+                font-weight: 400 700;
+                font-display: swap;
+                src: url("../fonts/jetbrains-mono-variable.woff2")
+                    format("woff2");
+            }
+        </style>
+        <style>
+            :root {
+                --color-cream: #fffbf5;
+                --color-warm-white: #fef9f3;
+                --color-sand: #f5ede4;
+                --color-sand-dark: #e8ded1;
+                --color-terracotta: #c75230;
+                --color-terracotta-light: #f4bdad;
+                --color-terracotta-dark: #a33d1e;
+                --color-terracotta-bg: #fdf0ec;
+                --color-text: #3d2e1f;
+                --color-text-secondary: #6b5b4d;
+                --color-text-muted: #9c8b7a;
+                --color-border: #e8ded1;
+                --color-border-light: #f0e8dd;
+                --font-sans:
+                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, sans-serif;
+                --font-mono:
+                    "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+            }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html {
+                font-size: 16px;
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: var(--font-sans);
+                background: var(--color-cream);
+                color: var(--color-text);
+                -webkit-font-smoothing: antialiased;
+                line-height: 1.6;
+            }
+            ::selection {
+                background: var(--color-terracotta);
+                color: white;
+            }
+            a {
+                color: var(--color-terracotta);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            a:hover {
+                color: var(--color-terracotta-dark);
+            }
+            .docs-nav {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                background: rgba(255, 251, 245, 0.92);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--color-border-light);
+            }
+            .docs-nav-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0.75rem 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .docs-nav-logo {
+                display: flex;
+                align-items: center;
+            }
+            .docs-nav-logo img {
+                height: 24px;
+            }
+            .docs-nav-links {
+                display: flex;
+                gap: 1.5rem;
+                align-items: center;
+            }
+            .docs-nav-links a {
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--color-text-secondary);
+            }
+            .docs-nav-links a:hover {
+                color: var(--color-terracotta);
+            }
+            .docs-layout {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                min-height: calc(100vh - 120px);
+            }
+            .docs-sidebar {
+                width: 240px;
+                flex-shrink: 0;
+                padding: 2rem 1.5rem;
+                border-right: 1px solid var(--color-border-light);
+                position: sticky;
+                top: 57px;
+                height: calc(100vh - 57px);
+                overflow-y: auto;
+            }
+            .docs-sidebar-title {
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--color-text-muted);
+                margin-bottom: 1rem;
+            }
+            .docs-sidebar-link {
+                display: block;
+                padding: 0.4rem 0.75rem;
+                margin: 0.15rem 0;
+                font-size: 0.9rem;
+                color: var(--color-text-secondary);
+                border-radius: 6px;
+                transition: all 0.15s;
+            }
+            .docs-sidebar-link:hover {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                text-decoration: none;
+            }
+            .docs-sidebar-link.active {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                font-weight: 600;
+            }
+            .docs-content {
+                flex: 1;
+                min-width: 0;
+                padding: 2.5rem 3rem 4rem;
+                max-width: 800px;
+            }
+            .docs-content h1 {
+                font-size: 2rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+                color: var(--color-text);
+            }
+            .docs-content .subtitle {
+                font-size: 1.05rem;
+                color: var(--color-text-muted);
+                margin-bottom: 2rem;
+                font-style: italic;
+            }
+            .docs-content h2 {
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-top: 2.5rem;
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 1px solid var(--color-border-light);
+                color: var(--color-text);
+            }
+            .docs-content h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-top: 1.75rem;
+                margin-bottom: 0.5rem;
+                color: var(--color-text);
+            }
+            .docs-content h4 {
+                font-size: 0.95rem;
+                font-weight: 600;
+                margin-top: 1.5rem;
+                margin-bottom: 0.4rem;
+                color: var(--color-text-secondary);
+            }
+            .docs-content p {
+                font-size: 0.95rem;
+                color: var(--color-text-secondary);
+                line-height: 1.75;
+                margin-bottom: 1rem;
+            }
+            .docs-content strong {
+                color: var(--color-text);
+                font-weight: 600;
+            }
+            .docs-content ul,
+            .docs-content ol {
+                padding-left: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .docs-content li {
+                font-size: 0.95rem;
+                color: var(--color-text-secondary);
+                line-height: 1.75;
+                margin-bottom: 0.35rem;
+            }
+            .docs-content code {
+                font-family: var(--font-mono);
+                background: var(--color-sand);
+                padding: 0.15em 0.4em;
+                border-radius: 4px;
+                font-size: 0.88em;
+                color: var(--color-terracotta-dark);
+            }
+            .docs-content pre {
+                background: #282a36;
+                color: #f8f8f2;
+                padding: 1.25rem 1.5rem;
+                border-radius: 8px;
+                overflow-x: auto;
+                margin-bottom: 1.25rem;
+                font-size: 0.88rem;
+                line-height: 1.6;
+            }
+            .docs-content pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+                font-size: inherit;
+            }
+            .docs-content blockquote {
+                border-left: 3px solid var(--color-terracotta-light);
+                padding: 0.75rem 1.25rem;
+                margin: 1rem 0 1.25rem;
+                background: var(--color-warm-white);
+                border-radius: 0 6px 6px 0;
+            }
+            .docs-content blockquote p {
+                color: var(--color-text-secondary);
+                margin-bottom: 0.25rem;
+            }
+            .docs-content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1.25rem;
+                font-size: 0.9rem;
+            }
+            .docs-content th {
+                text-align: left;
+                padding: 0.6rem 0.75rem;
+                background: var(--color-sand);
+                color: var(--color-text);
+                font-weight: 600;
+                border-bottom: 2px solid var(--color-border);
+            }
+            .docs-content td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid var(--color-border-light);
+                color: var(--color-text-secondary);
+            }
+            .docs-content hr {
+                border: none;
+                border-top: 1px solid var(--color-border-light);
+                margin: 2.5rem 0;
+            }
+            .docs-footer {
+                text-align: center;
+                padding: 2rem 1.5rem;
+                border-top: 1px solid var(--color-border-light);
+                font-size: 0.85rem;
+                color: var(--color-text-muted);
+            }
+            .docs-footer a {
+                color: var(--color-text-muted);
+            }
+            .docs-footer a:hover {
+                color: var(--color-terracotta);
+            }
+            @media (max-width: 768px) {
+                .docs-sidebar {
+                    display: none;
+                }
+                .docs-content {
+                    padding: 1.5rem 1.25rem 3rem;
+                }
+                .docs-content h1 {
+                    font-size: 1.5rem;
+                }
+                .docs-content h2 {
+                    font-size: 1.15rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="docs-nav">
+            <div class="docs-nav-inner">
+                <a href="/" class="docs-nav-logo"
+                    ><img
+                        src="../assets/querencia-logo.svg"
+                        alt="Querencia Linux"
+                        height="24"
+                /></a>
+                <div class="docs-nav-links">
+                    <a href="/docs/">Docs</a>
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        target="_blank"
+                        rel="noopener"
+                        >GitHub</a
+                    >
+                </div>
+            </div>
+        </nav>
+        <div class="docs-layout">
+            <aside class="docs-sidebar">
+                <nav class="docs-sidebar-nav">
+                    <div class="docs-sidebar-title">Documentation</div>
+                    <a href="/docs/" class="docs-sidebar-link">Overview</a>
+                    <a
+                        href="/docs/getting-started.html"
+                        class="docs-sidebar-link"
+                        >Getting Started</a
+                    >
+                    <a
+                        href="/docs/installing-software.html"
+                        class="docs-sidebar-link"
+                        >Installing Software</a
+                    >
+                    <a href="/docs/updates.html" class="docs-sidebar-link"
+                        >Updates &amp; Maintenance</a
+                    >
+                    <a href="/docs/hardware.html" class="docs-sidebar-link"
+                        >Hardware Support</a
+                    >
+                    <a href="/docs/faq.html" class="docs-sidebar-link active"
+                        >FAQ</a
+                    >
+                </nav>
+            </aside>
+            <main class="docs-content">
+                <h1>Frequently Asked Questions</h1>
+
+                <h2 id="general">General</h2>
+
+                <h3 id="what-is-querencia-linux">What is Querencia Linux?</h3>
+                <p>
+                    An atomic, immutable desktop Linux distribution based on
+                    AlmaLinux 10 with MATE Desktop. The name
+                    &#8220;Querencia&#8221; (Spanish) means a place where you
+                    feel safe and at home.
+                </p>
+
+                <h3 id="what-does-atomic-immutable-mean">
+                    What does &#8220;atomic&#8221; / &#8220;immutable&#8221;
+                    mean?
+                </h3>
+                <p>
+                    The root filesystem (<code>/usr</code>, <code>/etc</code>)
+                    is read-only at runtime. You can&#8217;t break the system by
+                    accidentally deleting system files or installing
+                    incompatible packages. Updates replace the entire system
+                    image atomically &#8212; either the update succeeds
+                    completely or nothing changes.
+                </p>
+
+                <h3 id="is-this-based-on-fedora">Is this based on Fedora?</h3>
+                <p>
+                    No. Querencia Linux is based on
+                    <strong>AlmaLinux 10</strong> (RHEL-compatible). The MATE
+                    Desktop packages come from our own COPR repository.
+                </p>
+
+                <h3 id="which-gpu-variant-should-i-use">
+                    Which GPU variant should I use?
+                </h3>
+                <ul>
+                    <li>
+                        <strong>AMD</strong> (<code>querencia-linux</code>)
+                        &#8212; if you have an AMD/Intel GPU or no dedicated GPU
+                    </li>
+                    <li>
+                        <strong>NVIDIA</strong>
+                        (<code>querencia-linux-nvidia</code>) &#8212; if you
+                        have an NVIDIA GPU
+                    </li>
+                </ul>
+
+                <h3 id="can-i-switch-between-amd-and-nvidia-variants">
+                    Can I switch between AMD and NVIDIA variants?
+                </h3>
+                <p>
+                    Yes:
+                    <code
+                        >sudo bootc switch
+                        ghcr.io/endegelaende/querencia-linux-nvidia:latest</code
+                    >
+                    (or the AMD image URL). Reboot to activate.
+                </p>
+
+                <hr />
+
+                <h2 id="software">Software</h2>
+
+                <h3 id="why-cant-i-use-sudo-dnf-install">
+                    Why can&#8217;t I use <code>sudo dnf install</code>?
+                </h3>
+                <p>
+                    The root filesystem is read-only. Use Flatpak for GUI apps,
+                    Micromamba for CLI tools, or Distrobox for full mutable
+                    environments. See
+                    <a href="/docs/installing-software.html"
+                        >Installing Software</a
+                    >.
+                </p>
+
+                <h3 id="where-is-the-app-store">Where is the app store?</h3>
+                <p>
+                    <strong>Warehouse</strong> &#8212; installed automatically
+                    on first login. Find it in Applications &#8594; System Tools
+                    &#8594; Warehouse. Or: <code>ujust open-store</code>.
+                </p>
+
+                <h3 id="can-i-install-chrome-chromium">
+                    Can I install Chrome/Chromium?
+                </h3>
+                <p>
+                    Yes, via Flatpak:
+                    <code>flatpak install flathub com.google.Chrome</code>
+                </p>
+
+                <h3 id="can-i-install-steam">Can I install Steam?</h3>
+                <p>
+                    Yes:
+                    <code>flatpak install flathub com.valvesoftware.Steam</code>
+                </p>
+
+                <h3 id="can-i-install-vs-code">Can I install VS Code?</h3>
+                <p>
+                    Yes:
+                    <code>flatpak install flathub com.visualstudio.code</code>
+                </p>
+
+                <h3 id="whats-the-difference-between-micromamba-and-distrobox">
+                    What&#8217;s the difference between Micromamba and
+                    Distrobox?
+                </h3>
+                <ul>
+                    <li>
+                        <strong>Micromamba</strong> &#8212; installs individual
+                        packages into <code>~/micromamba</code>. Best for CLI
+                        tools and languages (Python, Node, Rust). No root
+                        needed. Fast.
+                    </li>
+                    <li>
+                        <strong>Distrobox</strong> &#8212; creates full Linux
+                        containers (Fedora, Ubuntu, AlmaLinux). Best when you
+                        need <code>dnf install</code> or
+                        <code>apt install</code> for complex dependency chains.
+                        Shares your home directory.
+                    </li>
+                </ul>
+
+                <hr />
+
+                <h2 id="system">System</h2>
+
+                <h3 id="how-do-i-update">How do I update?</h3>
+                <p>
+                    <code>ujust update</code> &#8212; or it happens
+                    automatically every 6 hours. See
+                    <a href="/docs/updates.html">Updates &amp; Maintenance</a>.
+                </p>
+
+                <h3 id="how-do-i-roll-back-a-bad-update">
+                    How do I roll back a bad update?
+                </h3>
+                <p>
+                    <code>ujust rollback</code> then reboot. Or select the
+                    previous image from the GRUB boot menu.
+                </p>
+
+                <h3 id="how-do-i-check-what-version-im-running">
+                    How do I check what version I&#8217;m running?
+                </h3>
+                <p>
+                    <code>cat /etc/os-release</code> or
+                    <code>ujust status</code>
+                </p>
+
+                <h3 id="why-is-my-swap-showing-as-zram">
+                    Why is my swap showing as ZRAM?
+                </h3>
+                <p>
+                    Querencia uses compressed RAM as swap (ZRAM) instead of a
+                    disk swap partition. It&#8217;s faster and doesn&#8217;t
+                    wear out your SSD. <code>swapon --show</code> to verify.
+                </p>
+
+                <h3 id="how-do-i-change-my-keyboard-layout">
+                    How do I change my keyboard layout?
+                </h3>
+                <p>
+                    System &#8594; Preferences &#8594; Hardware &#8594; Keyboard
+                    &#8594; Layouts. The initial layout was set during
+                    installation.
+                </p>
+
+                <h3 id="how-do-i-change-the-theme">
+                    How do I change the theme?
+                </h3>
+                <ul>
+                    <li>Dark: <code>ujust mate-dark</code></li>
+                    <li>Light: <code>ujust mate-light</code></li>
+                    <li>
+                        Or manually: System &#8594; Preferences &#8594;
+                        Appearance
+                    </li>
+                </ul>
+
+                <h3 id="where-are-my-files">Where are my files?</h3>
+                <p>
+                    Your home directory (<code>/home/username</code>) is on a
+                    regular writable partition. Only the system directories are
+                    read-only. Documents, Downloads, Pictures etc. all work
+                    normally.
+                </p>
+
+                <h3 id="why-does-selinux-show-alerts">
+                    Why does SELinux show alerts?
+                </h3>
+                <p>
+                    SELinux is in Enforcing mode with the troubleshooter
+                    enabled. If you see an alert, it means something tried to do
+                    something the security policy doesn&#8217;t allow. Most
+                    alerts are informational and don&#8217;t affect
+                    functionality. If an app doesn&#8217;t work, check the alert
+                    details.
+                </p>
+
+                <h3 id="how-do-i-connect-my-iphone">
+                    How do I connect my iPhone?
+                </h3>
+                <p>
+                    Plug it in via USB. Trust the device on the iPhone when
+                    prompted. It should appear in Caja (file manager). If not:
+                    <code>idevicepair pair</code> then try again.
+                </p>
+
+                <h3 id="how-do-i-set-up-a-printer">
+                    How do I set up a printer?
+                </h3>
+                <p>
+                    <code>ujust printer-setup</code> or System &#8594;
+                    Administration &#8594; Printing. Network printers on your
+                    local network should be auto-discovered. For
+                    <code>ping printer.local</code> to work, mDNS is already
+                    configured.
+                </p>
+
+                <h3 id="how-do-i-control-my-monitors-brightness">
+                    How do I control my monitor&#8217;s brightness from the
+                    desktop?
+                </h3>
+                <p>
+                    External monitors via HDMI/DP:
+                    <code>ddcutil setvcp 10 70</code> (set brightness to 70%).
+                    Laptop screens: use the laptop&#8217;s function keys.
+                </p>
+
+                <h3 id="what-is-ujust">What is <code>ujust</code>?</h3>
+                <p>
+                    A command-line shortcut tool. Run
+                    <code>ujust --list</code> to see all available commands, or
+                    check the
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux#all-ujust-commands"
+                        target="_blank"
+                        rel="noopener"
+                        >full command reference in the README</a
+                    >.
+                </p>
+            </main>
+        </div>
+        <footer class="docs-footer">
+            <p>
+                &#169; 2026 Querencia Linux &#183;
+                <a
+                    href="https://github.com/endegelaende/querencia-linux/blob/main/LICENSE"
+                    target="_blank"
+                    rel="noopener"
+                    >MIT License</a
+                >
+                &#183; <a href="/privacy.html">Privacy</a>
+            </p>
+        </footer>
+    </body>
+</html>

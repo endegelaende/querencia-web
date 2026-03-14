@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Documentation — Querencia Linux</title>
+        <meta
+            name="description"
+            content="User documentation for Querencia Linux — getting started, installing software, updates, hardware support, and FAQ."
+        />
+        <style>
+            @font-face {
+                font-family: "Inter";
+                font-style: normal;
+                font-weight: 300 900;
+                font-display: swap;
+                src: url("../fonts/inter-variable.woff2") format("woff2");
+            }
+            @font-face {
+                font-family: "JetBrains Mono";
+                font-style: normal;
+                font-weight: 400 700;
+                font-display: swap;
+                src: url("../fonts/jetbrains-mono-variable.woff2")
+                    format("woff2");
+            }
+        </style>
+        <style>
+            :root {
+                --color-cream: #fffbf5;
+                --color-warm-white: #fef9f3;
+                --color-sand: #f5ede4;
+                --color-sand-dark: #e8ded1;
+                --color-terracotta: #c75230;
+                --color-terracotta-light: #f4bdad;
+                --color-terracotta-dark: #a33d1e;
+                --color-terracotta-bg: #fdf0ec;
+                --color-text: #3d2e1f;
+                --color-text-secondary: #6b5b4d;
+                --color-text-muted: #9c8b7a;
+                --color-border: #e8ded1;
+                --color-border-light: #f0e8dd;
+                --color-success: #22c55e;
+                --color-success-bg: #dcfce7;
+                --font-sans:
+                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, sans-serif;
+                --font-mono:
+                    "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+            }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html {
+                font-size: 16px;
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: var(--font-sans);
+                background: var(--color-cream);
+                color: var(--color-text);
+                -webkit-font-smoothing: antialiased;
+                line-height: 1.6;
+            }
+            ::selection {
+                background: var(--color-terracotta);
+                color: white;
+            }
+            a {
+                color: var(--color-terracotta);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            a:hover {
+                color: var(--color-terracotta-dark);
+            }
+
+            /* Nav */
+            .docs-nav {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                background: rgba(255, 251, 245, 0.92);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--color-border-light);
+            }
+            .docs-nav-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0.75rem 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .docs-nav-logo {
+                display: flex;
+                align-items: center;
+            }
+            .docs-nav-logo img {
+                height: 24px;
+            }
+            .docs-nav-links {
+                display: flex;
+                gap: 1.5rem;
+                align-items: center;
+            }
+            .docs-nav-links a {
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--color-text-secondary);
+            }
+            .docs-nav-links a:hover {
+                color: var(--color-terracotta);
+            }
+
+            /* Layout */
+            .docs-layout {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                min-height: calc(100vh - 120px);
+            }
+
+            /* Sidebar */
+            .docs-sidebar {
+                width: 240px;
+                flex-shrink: 0;
+                padding: 2rem 1.5rem;
+                border-right: 1px solid var(--color-border-light);
+                position: sticky;
+                top: 57px;
+                height: calc(100vh - 57px);
+                overflow-y: auto;
+            }
+            .docs-sidebar-title {
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--color-text-muted);
+                margin-bottom: 1rem;
+            }
+            .docs-sidebar-link {
+                display: block;
+                padding: 0.4rem 0.75rem;
+                margin: 0.15rem 0;
+                font-size: 0.9rem;
+                color: var(--color-text-secondary);
+                border-radius: 6px;
+                transition: all 0.15s;
+            }
+            .docs-sidebar-link:hover {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                text-decoration: none;
+            }
+            .docs-sidebar-link.active {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                font-weight: 600;
+            }
+
+            /* Content */
+            .docs-content {
+                flex: 1;
+                min-width: 0;
+                padding: 2.5rem 3rem 4rem;
+                max-width: 800px;
+            }
+            .docs-content h1 {
+                font-size: 2rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+                color: var(--color-text);
+            }
+            .docs-content .subtitle {
+                font-size: 1.05rem;
+                color: var(--color-text-muted);
+                margin-bottom: 2.5rem;
+                font-style: italic;
+            }
+            .docs-content p {
+                font-size: 0.95rem;
+                color: var(--color-text-secondary);
+                line-height: 1.75;
+                margin-bottom: 1rem;
+            }
+            .docs-content strong {
+                color: var(--color-text);
+                font-weight: 600;
+            }
+            .docs-content code {
+                font-family: var(--font-mono);
+                background: var(--color-sand);
+                padding: 0.15em 0.4em;
+                border-radius: 4px;
+                font-size: 0.88em;
+                color: var(--color-terracotta-dark);
+            }
+            .docs-content pre {
+                background: #282a36;
+                color: #f8f8f2;
+                padding: 1.25rem 1.5rem;
+                border-radius: 8px;
+                overflow-x: auto;
+                margin-bottom: 1.25rem;
+                font-size: 0.88rem;
+                line-height: 1.6;
+            }
+            .docs-content pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+                font-size: inherit;
+            }
+            .docs-content h2 {
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-top: 2.5rem;
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 1px solid var(--color-border-light);
+                color: var(--color-text);
+            }
+
+            /* Guide cards */
+            .guide-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-top: 0.5rem;
+            }
+            .guide-card {
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1.25rem 1.5rem;
+                background: var(--color-warm-white);
+                border: 1px solid var(--color-border-light);
+                border-radius: 10px;
+                transition: all 0.2s;
+                text-decoration: none;
+            }
+            .guide-card:hover {
+                border-color: var(--color-terracotta-light);
+                background: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+                text-decoration: none;
+            }
+            .guide-icon {
+                font-size: 1.5rem;
+                flex-shrink: 0;
+                width: 2.5rem;
+                height: 2.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--color-terracotta-bg);
+                border-radius: 8px;
+            }
+            .guide-card:nth-child(2) .guide-icon {
+                background: #dbeafe;
+            }
+            .guide-card:nth-child(3) .guide-icon {
+                background: #dcfce7;
+            }
+            .guide-card:nth-child(4) .guide-icon {
+                background: #fef3c7;
+            }
+            .guide-card:nth-child(5) .guide-icon {
+                background: #f3e8ff;
+            }
+            .guide-text h3 {
+                font-size: 1.05rem;
+                font-weight: 600;
+                color: var(--color-text);
+                margin-bottom: 0.25rem;
+            }
+            .guide-text p {
+                font-size: 0.9rem;
+                color: var(--color-text-secondary);
+                margin: 0;
+                line-height: 1.55;
+            }
+
+            /* Quick reference */
+            .quick-ref {
+                margin-top: 1.5rem;
+            }
+
+            /* Links section */
+            .links-list {
+                list-style: none;
+                padding: 0;
+                margin-top: 0.5rem;
+            }
+            .links-list li {
+                margin-bottom: 0.5rem;
+                font-size: 0.95rem;
+            }
+            .links-list li a {
+                font-weight: 500;
+            }
+            .links-list li span {
+                color: var(--color-text-muted);
+                margin-left: 0.25rem;
+            }
+
+            /* Footer */
+            .docs-footer {
+                text-align: center;
+                padding: 2rem 1.5rem;
+                border-top: 1px solid var(--color-border-light);
+                font-size: 0.85rem;
+                color: var(--color-text-muted);
+            }
+            .docs-footer a {
+                color: var(--color-text-muted);
+            }
+            .docs-footer a:hover {
+                color: var(--color-terracotta);
+            }
+
+            @media (max-width: 768px) {
+                .docs-sidebar {
+                    display: none;
+                }
+                .docs-content {
+                    padding: 1.5rem 1.25rem 3rem;
+                }
+                .docs-content h1 {
+                    font-size: 1.5rem;
+                }
+                .docs-content h2 {
+                    font-size: 1.15rem;
+                }
+                .docs-nav-inner {
+                    padding: 0.75rem 1rem;
+                }
+                .guide-card {
+                    padding: 1rem 1.25rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="docs-nav">
+            <div class="docs-nav-inner">
+                <a href="/" class="docs-nav-logo"
+                    ><img
+                        src="../assets/querencia-logo.svg"
+                        alt="Querencia Linux"
+                        height="24"
+                /></a>
+                <div class="docs-nav-links">
+                    <a href="/docs/">Docs</a>
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        target="_blank"
+                        rel="noopener"
+                        >GitHub</a
+                    >
+                </div>
+            </div>
+        </nav>
+
+        <div class="docs-layout">
+            <aside class="docs-sidebar">
+                <nav class="docs-sidebar-nav">
+                    <div class="docs-sidebar-title">Documentation</div>
+                    <a href="/docs/" class="docs-sidebar-link active"
+                        >Overview</a
+                    >
+                    <a
+                        href="/docs/getting-started.html"
+                        class="docs-sidebar-link"
+                        >Getting Started</a
+                    >
+                    <a
+                        href="/docs/installing-software.html"
+                        class="docs-sidebar-link"
+                        >Installing Software</a
+                    >
+                    <a href="/docs/updates.html" class="docs-sidebar-link"
+                        >Updates &amp; Maintenance</a
+                    >
+                    <a href="/docs/hardware.html" class="docs-sidebar-link"
+                        >Hardware Support</a
+                    >
+                    <a href="/docs/faq.html" class="docs-sidebar-link">FAQ</a>
+                </nav>
+            </aside>
+
+            <main class="docs-content">
+                <h1>Querencia Linux Documentation</h1>
+                <p class="subtitle">"Where Linux Feels at Home"</p>
+
+                <p>
+                    An atomic, immutable Linux desktop built on
+                    <strong>AlmaLinux 10</strong> with
+                    <strong>MATE Desktop</strong>. These guides cover everything
+                    from your first login to GPU drivers and printing.
+                </p>
+
+                <div class="guide-grid">
+                    <a href="/docs/getting-started.html" class="guide-card">
+                        <div class="guide-icon">🚀</div>
+                        <div class="guide-text">
+                            <h3>Getting Started</h3>
+                            <p>
+                                First steps after installation — your desktop,
+                                keyboard, shortcuts, Welcome Center, and how to
+                                install apps.
+                            </p>
+                        </div>
+                    </a>
+
+                    <a href="/docs/installing-software.html" class="guide-card">
+                        <div class="guide-icon">📦</div>
+                        <div class="guide-text">
+                            <h3>Installing Software</h3>
+                            <p>
+                                Flatpak for GUI apps, Micromamba for CLI tools,
+                                Distrobox for full mutable Linux environments.
+                            </p>
+                        </div>
+                    </a>
+
+                    <a href="/docs/updates.html" class="guide-card">
+                        <div class="guide-icon">🔄</div>
+                        <div class="guide-text">
+                            <h3>Updates &amp; Maintenance</h3>
+                            <p>
+                                Automatic updates, rollback, cleanup, ZRAM
+                                compressed swap, and system diagnostics.
+                            </p>
+                        </div>
+                    </a>
+
+                    <a href="/docs/hardware.html" class="guide-card">
+                        <div class="guide-icon">🖥️</div>
+                        <div class="guide-text">
+                            <h3>Hardware Support</h3>
+                            <p>
+                                GPU drivers (AMD &amp; NVIDIA), audio, printing,
+                                scanning, Bluetooth, WiFi, USB-C docks, and
+                                more.
+                            </p>
+                        </div>
+                    </a>
+
+                    <a href="/docs/faq.html" class="guide-card">
+                        <div class="guide-icon">❓</div>
+                        <div class="guide-text">
+                            <h3>Frequently Asked Questions</h3>
+                            <p>
+                                Common questions about immutable systems,
+                                software installation, GPU variants, updates,
+                                and troubleshooting.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- ============================================================= -->
+                <h2 id="quick-reference">Quick Reference</h2>
+
+                <div class="quick-ref">
+                    <pre><code>ujust --list              # show all available commands
+ujust update              # update system + Flatpak
+ujust rollback            # roll back to previous image
+ujust install-essentials  # install recommended apps
+ujust info                # system info
+ujust gpu-info            # GPU driver status (AMD or NVIDIA)
+ujust device-info         # collect diagnostics (shareable URL)</code></pre>
+                </div>
+
+                <!-- ============================================================= -->
+                <h2 id="links">Links</h2>
+
+                <ul class="links-list">
+                    <li>
+                        <a href="https://querencialinux.org"
+                            >querencialinux.org</a
+                        >
+                        <span>— project website</span>
+                    </li>
+                    <li>
+                        <a
+                            href="https://github.com/endegelaende/querencia-linux"
+                            target="_blank"
+                            rel="noopener"
+                            >GitHub</a
+                        >
+                        <span>— source code, issues, CI/CD</span>
+                    </li>
+                    <li>
+                        <a
+                            href="https://ghcr.io/endegelaende/querencia-linux"
+                            target="_blank"
+                            rel="noopener"
+                            >Container Image (AMD)</a
+                        >
+                        <span
+                            >—
+                            <code
+                                >ghcr.io/endegelaende/querencia-linux:latest</code
+                            ></span
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://ghcr.io/endegelaende/querencia-linux-nvidia"
+                            target="_blank"
+                            rel="noopener"
+                            >Container Image (NVIDIA)</a
+                        >
+                        <span
+                            >—
+                            <code
+                                >ghcr.io/endegelaende/querencia-linux-nvidia:latest</code
+                            ></span
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://copr.fedorainfracloud.org/coprs/winonaoctober/MateDesktop-EL10/"
+                            target="_blank"
+                            rel="noopener"
+                            >MATE COPR</a
+                        >
+                        <span>— MATE Desktop packages for EL10</span>
+                    </li>
+                </ul>
+            </main>
+        </div>
+
+        <footer class="docs-footer">
+            <p>
+                &copy; 2026 Querencia Linux &middot;
+                <a
+                    href="https://github.com/endegelaende/querencia-linux/blob/main/LICENSE"
+                    target="_blank"
+                    rel="noopener"
+                    >MIT License</a
+                >
+                &middot; <a href="/privacy.html">Privacy</a>
+            </p>
+        </footer>
+    </body>
+</html>

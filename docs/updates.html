@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Updates &amp; Maintenance — Querencia Linux Docs</title>
+        <meta
+            name="description"
+            content="Automatic updates, rollback, cleanup, ZRAM, and system info for Querencia Linux"
+        />
+        <style>
+            @font-face {
+                font-family: "Inter";
+                font-style: normal;
+                font-weight: 300 900;
+                font-display: swap;
+                src: url("../fonts/inter-variable.woff2") format("woff2");
+            }
+            @font-face {
+                font-family: "JetBrains Mono";
+                font-style: normal;
+                font-weight: 400 700;
+                font-display: swap;
+                src: url("../fonts/jetbrains-mono-variable.woff2")
+                    format("woff2");
+            }
+        </style>
+        <style>
+            :root {
+                --color-cream: #fffbf5;
+                --color-warm-white: #fef9f3;
+                --color-sand: #f5ede4;
+                --color-sand-dark: #e8ded1;
+                --color-terracotta: #c75230;
+                --color-terracotta-light: #f4bdad;
+                --color-terracotta-dark: #a33d1e;
+                --color-terracotta-bg: #fdf0ec;
+                --color-text: #3d2e1f;
+                --color-text-secondary: #6b5b4d;
+                --color-text-muted: #9c8b7a;
+                --color-border: #e8ded1;
+                --color-border-light: #f0e8dd;
+                --font-sans:
+                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, sans-serif;
+                --font-mono:
+                    "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+            }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html {
+                font-size: 16px;
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: var(--font-sans);
+                background: var(--color-cream);
+                color: var(--color-text);
+                -webkit-font-smoothing: antialiased;
+                line-height: 1.6;
+            }
+            ::selection {
+                background: var(--color-terracotta);
+                color: white;
+            }
+            a {
+                color: var(--color-terracotta);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            a:hover {
+                color: var(--color-terracotta-dark);
+            }
+            .docs-nav {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                background: rgba(255, 251, 245, 0.92);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--color-border-light);
+            }
+            .docs-nav-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0.75rem 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .docs-nav-logo {
+                display: flex;
+                align-items: center;
+            }
+            .docs-nav-logo img {
+                height: 24px;
+            }
+            .docs-nav-links {
+                display: flex;
+                gap: 1.5rem;
+                align-items: center;
+            }
+            .docs-nav-links a {
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--color-text-secondary);
+            }
+            .docs-nav-links a:hover {
+                color: var(--color-terracotta);
+            }
+            .docs-layout {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                min-height: calc(100vh - 120px);
+            }
+            .docs-sidebar {
+                width: 240px;
+                flex-shrink: 0;
+                padding: 2rem 1.5rem;
+                border-right: 1px solid var(--color-border-light);
+                position: sticky;
+                top: 57px;
+                height: calc(100vh - 57px);
+                overflow-y: auto;
+            }
+            .docs-sidebar-title {
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--color-text-muted);
+                margin-bottom: 1rem;
+            }
+            .docs-sidebar-link {
+                display: block;
+                padding: 0.4rem 0.75rem;
+                margin: 0.15rem 0;
+                font-size: 0.9rem;
+                color: var(--color-text-secondary);
+                border-radius: 6px;
+                transition: all 0.15s;
+            }
+            .docs-sidebar-link:hover {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                text-decoration: none;
+            }
+            .docs-sidebar-link.active {
+                color: var(--color-terracotta);
+                background: var(--color-terracotta-bg);
+                font-weight: 600;
+            }
+            .docs-content {
+                flex: 1;
+                min-width: 0;
+                padding: 2.5rem 3rem 4rem;
+                max-width: 800px;
+            }
+            .docs-content h1 {
+                font-size: 2rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+                color: var(--color-text);
+            }
+            .docs-content .subtitle {
+                font-size: 1.05rem;
+                color: var(--color-text-muted);
+                margin-bottom: 2rem;
+                font-style: italic;
+            }
+            .docs-content h2 {
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-top: 2.5rem;
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 1px solid var(--color-border-light);
+                color: var(--color-text);
+            }
+            .docs-content h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-top: 1.75rem;
+                margin-bottom: 0.5rem;
+                color: var(--color-text);
+            }
+            .docs-content h4 {
+                font-size: 0.95rem;
+                font-weight: 600;
+                margin-top: 1.5rem;
+                margin-bottom: 0.4rem;
+                color: var(--color-text-secondary);
+            }
+            .docs-content p {
+                font-size: 0.95rem;
+                color: var(--color-text-secondary);
+                line-height: 1.75;
+                margin-bottom: 1rem;
+            }
+            .docs-content strong {
+                color: var(--color-text);
+                font-weight: 600;
+            }
+            .docs-content ul,
+            .docs-content ol {
+                padding-left: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .docs-content li {
+                font-size: 0.95rem;
+                color: var(--color-text-secondary);
+                line-height: 1.75;
+                margin-bottom: 0.35rem;
+            }
+            .docs-content code {
+                font-family: var(--font-mono);
+                background: var(--color-sand);
+                padding: 0.15em 0.4em;
+                border-radius: 4px;
+                font-size: 0.88em;
+                color: var(--color-terracotta-dark);
+            }
+            .docs-content pre {
+                background: #282a36;
+                color: #f8f8f2;
+                padding: 1.25rem 1.5rem;
+                border-radius: 8px;
+                overflow-x: auto;
+                margin-bottom: 1.25rem;
+                font-size: 0.88rem;
+                line-height: 1.6;
+            }
+            .docs-content pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+                font-size: inherit;
+            }
+            .docs-content blockquote {
+                border-left: 3px solid var(--color-terracotta-light);
+                padding: 0.75rem 1.25rem;
+                margin: 1rem 0 1.25rem;
+                background: var(--color-warm-white);
+                border-radius: 0 6px 6px 0;
+            }
+            .docs-content blockquote p {
+                color: var(--color-text-secondary);
+                margin-bottom: 0.25rem;
+            }
+            .docs-content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1.25rem;
+                font-size: 0.9rem;
+            }
+            .docs-content th {
+                text-align: left;
+                padding: 0.6rem 0.75rem;
+                background: var(--color-sand);
+                color: var(--color-text);
+                font-weight: 600;
+                border-bottom: 2px solid var(--color-border);
+            }
+            .docs-content td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid var(--color-border-light);
+                color: var(--color-text-secondary);
+            }
+            .docs-content hr {
+                border: none;
+                border-top: 1px solid var(--color-border-light);
+                margin: 2.5rem 0;
+            }
+            .docs-footer {
+                text-align: center;
+                padding: 2rem 1.5rem;
+                border-top: 1px solid var(--color-border-light);
+                font-size: 0.85rem;
+                color: var(--color-text-muted);
+            }
+            .docs-footer a {
+                color: var(--color-text-muted);
+            }
+            .docs-footer a:hover {
+                color: var(--color-terracotta);
+            }
+            @media (max-width: 768px) {
+                .docs-sidebar {
+                    display: none;
+                }
+                .docs-content {
+                    padding: 1.5rem 1.25rem 3rem;
+                }
+                .docs-content h1 {
+                    font-size: 1.5rem;
+                }
+                .docs-content h2 {
+                    font-size: 1.15rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="docs-nav">
+            <div class="docs-nav-inner">
+                <a href="/" class="docs-nav-logo"
+                    ><img
+                        src="../assets/querencia-logo.svg"
+                        alt="Querencia Linux"
+                        height="24"
+                /></a>
+                <div class="docs-nav-links">
+                    <a href="/docs/">Docs</a>
+                    <a
+                        href="https://github.com/endegelaende/querencia-linux"
+                        target="_blank"
+                        rel="noopener"
+                        >GitHub</a
+                    >
+                </div>
+            </div>
+        </nav>
+        <div class="docs-layout">
+            <aside class="docs-sidebar">
+                <nav class="docs-sidebar-nav">
+                    <div class="docs-sidebar-title">Documentation</div>
+                    <a href="/docs/" class="docs-sidebar-link">Overview</a>
+                    <a
+                        href="/docs/getting-started.html"
+                        class="docs-sidebar-link"
+                        >Getting Started</a
+                    >
+                    <a
+                        href="/docs/installing-software.html"
+                        class="docs-sidebar-link"
+                        >Installing Software</a
+                    >
+                    <a
+                        href="/docs/updates.html"
+                        class="docs-sidebar-link active"
+                        >Updates &amp; Maintenance</a
+                    >
+                    <a href="/docs/hardware.html" class="docs-sidebar-link"
+                        >Hardware Support</a
+                    >
+                    <a href="/docs/faq.html" class="docs-sidebar-link">FAQ</a>
+                </nav>
+            </aside>
+            <main class="docs-content">
+                <h1>Updates &amp; Maintenance</h1>
+                <p class="subtitle">
+                    Querencia Linux keeps itself up to date automatically — but
+                    you're always in control. This guide covers how updates
+                    work, how to roll back if something goes wrong, and how to
+                    keep your system healthy.
+                </p>
+
+                <hr />
+
+                <h2 id="how-updates-work">How Updates Work</h2>
+                <p>
+                    Querencia Linux uses
+                    <strong>atomic image-based updates</strong> via
+                    <a
+                        href="https://containers.github.io/bootc/"
+                        target="_blank"
+                        rel="noopener"
+                        >bootc</a
+                    >. This is fundamentally different from traditional
+                    package-by-package updates — it's more like how phones or
+                    Chromebooks update:
+                </p>
+                <ul>
+                    <li>
+                        Updates download a
+                        <strong>new system image</strong> in the background
+                    </li>
+                    <li>
+                        The new image is <strong>staged alongside</strong> the
+                        current one
+                    </li>
+                    <li>
+                        On <strong>reboot</strong>, the new image becomes active
+                    </li>
+                    <li>
+                        The <strong>old image is always kept</strong> for
+                        rollback
+                    </li>
+                    <li>
+                        If something goes wrong, you can boot the previous image
+                        from GRUB
+                    </li>
+                </ul>
+                <p>
+                    Your files, settings, Flatpak apps, and Micromamba
+                    environments are never touched by system updates — they live
+                    in <code>/var/home</code> which is separate from the
+                    immutable root filesystem.
+                </p>
+
+                <hr />
+
+                <h2 id="automatic-updates">Automatic Updates</h2>
+                <p>
+                    Automatic updates are
+                    <strong>enabled by default</strong> and run every 6 hours.
+                    They handle both the base system image (bootc) and your
+                    Flatpak apps.
+                </p>
+                <p><strong>What happens automatically:</strong></p>
+                <ol>
+                    <li>
+                        <code>bootc upgrade</code> checks for a new system image
+                        and stages it
+                    </li>
+                    <li>
+                        Flatpak apps are updated (both system and user scope)
+                    </li>
+                    <li>
+                        If a new image was staged, you get a
+                        <strong>desktop notification</strong> telling you to
+                        reboot
+                    </li>
+                    <li>
+                        On <strong>metered connections</strong> (mobile hotspot,
+                        etc.), updates are
+                        <strong>skipped</strong> automatically
+                    </li>
+                </ol>
+                <p><strong>Managing auto-updates:</strong></p>
+                <pre><code>ujust update-status       # check timer status and recent log
+ujust update-disable      # disable automatic updates
+ujust update-enable       # re-enable automatic updates
+ujust update-now          # trigger an update right now (without waiting)</code></pre>
+
+                <hr />
+
+                <h2 id="manual-updates">Manual Updates</h2>
+                <p>
+                    If you prefer to update on your own schedule, or want to run
+                    a quick update right now:
+                </p>
+                <pre><code>ujust update              # full update: bootc image + Flatpak apps
+ujust update-system       # update only the bootc system image
+ujust update-flatpak      # update only Flatpak apps</code></pre>
+                <p>
+                    After a system image update, <strong>reboot</strong> to
+                    activate the new image:
+                </p>
+                <pre><code>sudo reboot</code></pre>
+                <blockquote>
+                    <p>
+                        <strong>Tip:</strong> Flatpak updates take effect
+                        immediately — no reboot needed. Only bootc image updates
+                        require a reboot.
+                    </p>
+                </blockquote>
+
+                <hr />
+
+                <h2 id="rollback">Rollback</h2>
+                <p>
+                    If something breaks after an update, rolling back is simple
+                    and instant:
+                </p>
+
+                <h3>From the command line</h3>
+                <pre><code>ujust rollback            # switch to the previous image
+sudo reboot               # activate it</code></pre>
+
+                <h3>From the GRUB boot menu</h3>
+                <p>
+                    During boot, the GRUB menu shows both the
+                    <strong>current</strong> and
+                    <strong>previous</strong> image. Select the older entry to
+                    boot it. This is especially useful if the new image won't
+                    boot at all.
+                </p>
+                <blockquote>
+                    <p>
+                        <strong>Note:</strong> Querencia always keeps exactly
+                        one previous image. After a rollback and reboot, the
+                        "broken" image is still available as the alternate entry
+                        — so you can switch back if needed.
+                    </p>
+                </blockquote>
+
+                <hr />
+
+                <h2 id="maintenance">Maintenance</h2>
+
+                <h3>Full maintenance</h3>
+                <pre><code>ujust maintenance         # runs update + clean in one step</code></pre>
+
+                <h3>Cleaning up</h3>
+                <pre><code>ujust clean               # clean journal logs (>7 days), unused Flatpak runtimes, podman cache
+ujust clean-flatpak       # remove only unused Flatpak runtimes
+ujust mamba-clean         # clean Micromamba download cache</code></pre>
+
+                <h3>SSD TRIM</h3>
+                <p>
+                    TRIM runs automatically once a week via
+                    <code>fstrim.timer</code>. To run it manually:
+                </p>
+                <pre><code>ujust trim                # run SSD TRIM now</code></pre>
+
+                <h3>Disk and memory</h3>
+                <pre><code>ujust disk                # check disk usage (/, /boot, /var/home)
+ujust memory              # check RAM and swap usage</code></pre>
+
+                <hr />
+
+                <h2 id="zram-compressed-swap">ZRAM (Compressed Swap)</h2>
+                <p>
+                    Querencia uses <strong>ZRAM</strong> instead of traditional
+                    disk-based swap. ZRAM creates a compressed swap area in RAM,
+                    which is much faster than swapping to disk and produces zero
+                    SSD wear.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Size</td>
+                            <td>50% of physical RAM</td>
+                        </tr>
+                        <tr>
+                            <td>Compression</td>
+                            <td>zstd</td>
+                        </tr>
+                        <tr>
+                            <td>Swap priority</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td><code>vm.swappiness</code></td>
+                            <td>
+                                180 (tuned for ZRAM — higher values are correct
+                                here)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <blockquote>
+                    <p>
+                        <strong>Why swappiness 180?</strong> Traditional disk
+                        swap benefits from low swappiness because disk I/O is
+                        slow. ZRAM swap is backed by RAM with compression, so
+                        there's no disk penalty. A high swappiness value tells
+                        the kernel to use ZRAM early, which actually improves
+                        performance by freeing up RAM for caches.
+                    </p>
+                </blockquote>
+                <p>Check ZRAM status:</p>
+                <pre><code>swapon --show</code></pre>
+                <p>
+                    You should see something like <code>/dev/zram0</code> with
+                    type <code>partition</code>.
+                </p>
+
+                <hr />
+
+                <h2 id="system-info">System Info</h2>
+                <pre><code>ujust info                # system overview (fastfetch)
+ujust status              # bootc image status (current + staged + rollback images)
+ujust services            # list running systemd services
+ujust logs                # last 50 lines of current boot session logs
+ujust bios-info           # BIOS/UEFI information
+ujust device-info         # full system diagnostics (useful for troubleshooting)</code></pre>
+
+                <h3>GPU info</h3>
+                <p>
+                    These commands auto-detect whether you have an AMD or NVIDIA
+                    GPU:
+                </p>
+                <pre><code>ujust gpu-info            # driver, Vulkan, VA-API / nvidia-smi status
+ujust gpu-monitor         # live GPU monitoring (AMD sysfs or nvidia-smi)
+ujust gpu-sensors         # one-shot sensor readings (temp, VRAM, power, clocks)
+ujust gpu-performance     # high performance mode
+ujust gpu-powersave       # power saving mode
+ujust gpu-auto            # automatic / reset to defaults</code></pre>
+
+                <hr />
+
+                <h2 id="frequently-asked-questions">
+                    Frequently Asked Questions
+                </h2>
+
+                <h3>Do I need to do anything for updates?</h3>
+                <p>
+                    No. Updates happen automatically every 6 hours. Just reboot
+                    when you see the notification (or whenever it's convenient —
+                    there's no rush).
+                </p>
+
+                <h3>Will updates break my files?</h3>
+                <p>
+                    No. Your home directory (<code>/var/home</code>) is
+                    completely separate from the system image. Updates only
+                    replace the immutable root filesystem.
+                </p>
+
+                <h3>How much bandwidth do updates use?</h3>
+                <p>
+                    bootc uses <strong>delta downloads</strong> — only the
+                    layers that changed are downloaded, not the entire image.
+                    Typical updates are a few hundred MB, not multiple GB.
+                </p>
+
+                <h3>Can I install RPM packages with <code>dnf</code>?</h3>
+                <p>
+                    No. The root filesystem is read-only. Use
+                    <strong>Flatpak</strong> for graphical apps,
+                    <strong>Micromamba</strong> for CLI tools, or
+                    <strong>Distrobox</strong> for a full mutable Linux
+                    environment. See the
+                    <a href="/docs/installing-software.html"
+                        >Installing Software</a
+                    >
+                    guide.
+                </p>
+
+                <h3>What if auto-update stages an image I don't want?</h3>
+                <p>
+                    Run <code>ujust rollback</code> before rebooting, or simply
+                    select the previous image from the GRUB menu during boot.
+                </p>
+
+                <h3>How do I check which image I'm running?</h3>
+                <pre><code>ujust status</code></pre>
+                <p>Or check directly:</p>
+                <pre><code>cat /etc/os-release</code></pre>
+                <p>
+                    The <code>PRETTY_NAME</code> field shows the Querencia
+                    version and GPU variant (AMD or NVIDIA).
+                </p>
+            </main>
+        </div>
+        <footer class="docs-footer">
+            <p>
+                &copy; 2026 Querencia Linux &middot;
+                <a
+                    href="https://github.com/endegelaende/querencia-linux/blob/main/LICENSE"
+                    target="_blank"
+                    rel="noopener"
+                    >MIT License</a
+                >
+                &middot; <a href="/privacy.html">Privacy</a>
+            </p>
+        </footer>
+    </body>
+</html>
