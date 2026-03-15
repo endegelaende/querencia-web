@@ -438,7 +438,8 @@
                 <p>
                     This installs: Thunderbird, LibreOffice, Calculator, Evince
                     (PDF viewer), Flatseal, Celluloid (video player), and Simple
-                    Scan. Firefox is already pre-installed.
+                    Scan. (Firefox is already pre-installed as an RPM for best
+                    system integration.)
                 </p>
 
                 <h3>Common commands</h3>
@@ -591,6 +592,23 @@ distrobox-export --app gimp      # Creates a .desktop file on the host</code></p
                 <p>
                     The app will then show up in your MATE menu alongside native
                     apps.
+                </p>
+
+                <h3>Third-Party Apps (ujust recipes)</h3>
+
+                <p>
+                    Some proprietary apps have dedicated install recipes that
+                    handle the entire Distrobox setup automatically:
+                </p>
+
+                <pre><code>ujust install-horizon     # Install Omnissa Horizon Client (VDI)
+ujust remove-horizon      # Remove Horizon Client and its container</code></pre>
+
+                <p>
+                    The Horizon Client runs in a dedicated AlmaLinux 10
+                    Distrobox with all required dependencies (GTK3, Firefox for
+                    SAML/Workspace ONE authentication). After installation, it
+                    appears in your application menu like a native app.
                 </p>
 
                 <hr />
