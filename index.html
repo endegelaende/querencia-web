@@ -1938,17 +1938,55 @@
                     <div class="install-step">
                         <div class="step-number">1</div>
                         <div class="step-content">
-                            <h4>Get the ISO</h4>
-                            <p>
-                                Build it yourself with <code>make iso</code> on
-                                a Linux machine with Podman, or grab it from
+                            <h4>Download the ISO</h4>
+                            <p>Pick your GPU variant:</p>
+                            <div
+                                style="
+                                    display: flex;
+                                    gap: 0.75rem;
+                                    flex-wrap: wrap;
+                                    margin-top: 0.5rem;
+                                "
+                            >
                                 <a
-                                    href="https://github.com/endegelaende/querencia-linux/actions"
-                                    target="_blank"
-                                    rel="noopener"
-                                    >GitHub Actions artifacts</a
-                                >.
-                            </p>
+                                    href="https://dl.querencialinux.org/querencia-linux-10-20260315.iso"
+                                    class="btn btn-primary"
+                                    style="font-size: 0.85rem"
+                                >
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
+                                        />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                    </svg>
+                                    AMD (2.6 GB)
+                                </a>
+                                <a
+                                    href="https://dl.querencialinux.org/querencia-linux-nvidia-10-20260315.iso"
+                                    class="btn btn-secondary"
+                                    style="font-size: 0.85rem"
+                                >
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
+                                        />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                    </svg>
+                                    NVIDIA (2.8 GB)
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="install-step">
