@@ -1873,12 +1873,12 @@
                 <div class="install-tabs animate-on-scroll">
                     <button
                         class="install-tab active"
-                        onclick="switchTab('rebase')"
+                        onclick="switchTab('iso')"
                     >
-                        Rebase (existing system)
-                    </button>
-                    <button class="install-tab" onclick="switchTab('iso')">
                         Fresh Install (ISO)
+                    </button>
+                    <button class="install-tab" onclick="switchTab('rebase')">
+                        Rebase (existing system)
                     </button>
                     <button class="install-tab" onclick="switchTab('vm')">
                         Test in a VM
@@ -1886,55 +1886,9 @@
                 </div>
 
                 <div
-                    id="panel-rebase"
+                    id="panel-iso"
                     class="install-panel active animate-on-scroll"
                 >
-                    <div class="install-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h4>Switch to Querencia</h4>
-                            <p>From any existing bootc or Atomic system:</p>
-                            <div class="terminal" style="margin-top: 0.75rem">
-                                <div class="terminal-body">
-                                    <span class="prompt">$ </span
-                                    ><span class="command"
-                                        >sudo bootc switch
-                                        ghcr.io/endegelaende/querencia-linux:latest</span
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="install-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h4>Reboot</h4>
-                            <p>
-                                The new image activates on reboot. Your previous
-                                system is kept for rollback.
-                            </p>
-                            <div class="terminal" style="margin-top: 0.75rem">
-                                <div class="terminal-body">
-                                    <span class="prompt">$ </span
-                                    ><span class="command">sudo reboot</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="install-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h4>Done!</h4>
-                            <p>
-                                LightDM greets you. On first login, Warehouse
-                                installs, Flathub connects, and your Micromamba
-                                <code>base</code> environment is ready.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="panel-iso" class="install-panel">
                     <div class="install-step">
                         <div class="step-number">1</div>
                         <div class="step-content">
@@ -1992,30 +1946,126 @@
                     <div class="install-step">
                         <div class="step-number">2</div>
                         <div class="step-content">
-                            <h4>Write to USB</h4>
+                            <h4>Write to a USB drive</h4>
                             <p>
-                                Use Ventoy, Rufus, or <code>dd</code> to write
-                                the ISO to a USB drive.
+                                You need a USB drive (4 GB or larger). Use one
+                                of these free tools to write the ISO file to it:
                             </p>
+                            <ul
+                                style="
+                                    margin: 0.5rem 0 0 1.25rem;
+                                    font-size: 0.88rem;
+                                    color: var(--color-text-secondary);
+                                    line-height: 1.8;
+                                "
+                            >
+                                <li>
+                                    <strong>Windows:</strong>
+                                    <a
+                                        href="https://rufus.ie"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >Rufus</a
+                                    >
+                                    — open it, select your USB drive, select the
+                                    downloaded ISO, click Start
+                                </li>
+                                <li>
+                                    <strong>Linux:</strong>
+                                    <a
+                                        href="https://www.ventoy.net"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >Ventoy</a
+                                    >
+                                    — install once on the USB, then just copy
+                                    the ISO file onto it
+                                </li>
+                                <li>
+                                    <strong>macOS:</strong>
+                                    <a
+                                        href="https://etcher.balena.io"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >balenaEtcher</a
+                                    >
+                                    — open it, pick the ISO, pick the USB, click
+                                    Flash
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="install-step">
                         <div class="step-number">3</div>
                         <div class="step-content">
-                            <h4>Boot &amp; Install</h4>
+                            <h4>Boot from USB &amp; install</h4>
                             <p>
-                                The Anaconda installer guides you through
-                                language, keyboard, timezone, disk, and user
-                                creation. No hardcoded defaults — you choose
-                                everything.
+                                Restart your computer and boot from the USB
+                                drive (usually by pressing <strong>F12</strong>,
+                                <strong>F2</strong>, or
+                                <strong>Del</strong> during startup — it depends
+                                on your PC). The graphical installer walks you
+                                through each step: language, keyboard, timezone,
+                                disk, and user creation. Just follow the
+                                screens.
                             </p>
                         </div>
                     </div>
                     <div class="install-step">
                         <div class="step-number">4</div>
                         <div class="step-content">
-                            <h4>Reboot into LightDM</h4>
-                            <p>Remove the USB, reboot, and you're home.</p>
+                            <h4>Remove USB &amp; reboot</h4>
+                            <p>
+                                Once the installation finishes, remove the USB
+                                drive and reboot. The login screen appears —
+                                you're home.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-rebase" class="install-panel">
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Switch to Querencia</h4>
+                            <p>From any existing bootc or Atomic system:</p>
+                            <div class="terminal" style="margin-top: 0.75rem">
+                                <div class="terminal-body">
+                                    <span class="prompt">$ </span
+                                    ><span class="command"
+                                        >sudo bootc switch
+                                        ghcr.io/endegelaende/querencia-linux:latest</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Reboot</h4>
+                            <p>
+                                The new image activates on reboot. Your previous
+                                system is kept for rollback.
+                            </p>
+                            <div class="terminal" style="margin-top: 0.75rem">
+                                <div class="terminal-body">
+                                    <span class="prompt">$ </span
+                                    ><span class="command">sudo reboot</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Done!</h4>
+                            <p>
+                                LightDM greets you. On first login, Warehouse
+                                installs, Flathub connects, and your Micromamba
+                                <code>base</code> environment is ready.
+                            </p>
                         </div>
                     </div>
                 </div>
